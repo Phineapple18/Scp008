@@ -6,7 +6,7 @@ Plugin for SCP-SL game, that allows SCPs-0492 to infect human players with SCP-0
 - Infected player can have effects applied and messages shown to them after dropping to certain health amount.
 - Infected player have a chance to cure themselves of infectioncan using medical items or SCP-500.
 - Infected player can be hurt by teammates, once they drop to set health amount. It applies only, if friendly fire is disabled on server.
-- Infected player can become SCP-0492 upon death, depending on manner of reason.
+- Infected player can become SCP-0492 upon death, depending on manner of death (from infection, SCP-049 attack, SCP-0492 attack or any death).
 
 ## Required plugins and dependencies (1.0.0)
 - [NWAPIPermissionSystem](https://github.com/CedModV2/NWAPIPermissionSystem/releases/tag/0.0.6) by ced777ric - plugin
