@@ -10,7 +10,7 @@ Plugin for SCP-SL game, that allows SCPs-0492 to infect human players with SCP-0
 
 ## Required plugins and dependencies (1.0.0)
 - [NWAPIPermissionSystem](https://github.com/CedModV2/NWAPIPermissionSystem/releases/tag/0.0.6) by ced777ric - plugin
-- [Harmony 2.2.2.0](https://github.com/pardeike/Harmony/releases/tag/v2.2.2.0) by pardeike - dependency
+- [Harmony 2.2.2.0](https://github.com/pardeike/Harmony/releases/tag/v2.2.2.0) by pardeike - dependency (attached to first release)
 
 ## Config
 |Name|Type|Default value|Description|
