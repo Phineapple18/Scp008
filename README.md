@@ -10,7 +10,7 @@ A plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) 
   * become a Zombie upon death. Whether or not a player becomes a Zombie, depends on the reason(s) of death set in the config file (infection, SCP-049 attack, Zombie attack or any reason).
 - If infected player dies from SCP-049 attack, their death will count as a revival.
 
-## Required plugins and dependencies (1.0.0)
+## Required plugins and dependencies (1.1.0)
 - [NWAPIPermissionSystem](https://github.com/CedModV2/NWAPIPermissionSystem/releases/tag/0.0.6) by ced777ric - plugin
 - [Harmony 2.2.2.0](https://github.com/pardeike/Harmony/releases/tag/v2.2.2.0) by pardeike - dependency
 
