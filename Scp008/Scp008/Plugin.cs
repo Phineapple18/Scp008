@@ -19,7 +19,7 @@ namespace Scp008
     public class Plugin
     {
         [PluginPriority(LoadPriority.Medium)]
-        [PluginEntryPoint(Translation.pluginName, "1.0.0", null, "Phineapple18")]
+        [PluginEntryPoint(Translation.pluginName, "1.1.0", null, "Phineapple18")]
         public void OnLoad()
         {
             if (!pluginConfig.IsEnabled)
@@ -33,7 +33,7 @@ namespace Scp008
             }
             if (File.Exists(Path.Combine(Paths.GlobalPlugins.Plugins, "0Harmony.dll")) || File.Exists(Path.Combine(Paths.LocalPlugins.Plugins, "0Harmony.dll")))
             {
-                Log.Warning("0Harmony should be in the dependencies folder.", Translation.pluginName);
+                Log.Warning("The Harmony dll file should be placed in the dependencies folder.", Translation.pluginName);
             }
             Singleton = this;
             pluginHandler = PluginHandler.Get(this);

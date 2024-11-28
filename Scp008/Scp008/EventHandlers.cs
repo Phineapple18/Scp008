@@ -51,11 +51,7 @@ namespace Scp008
         [PluginEvent(ServerEventType.PlayerDying)]
         internal bool OnPlayerDying(PlayerDyingEvent ev)
         {
-            if (ev.Player.IsScp008())
-            {
-                return !ev.Player.TrySpawnAs0492(ev.DamageHandler);
-            }
-            return true;
+            return !(ev.Player.IsScp008() && ev.Player.TrySpawnAs0492(ev.DamageHandler));
         }
 
         [PluginEvent(ServerEventType.PlayerExitPocketDimension)]
@@ -65,7 +61,7 @@ namespace Scp008
             {
                 IFpcRole fpcRole = ev.Player.RoleBase as IFpcRole;
                 ev.Player.Position = Scp106PocketExitFinder.GetBestExitPosition(fpcRole);
-                Log.Debug($"Player {ev.Player.Nickname} exited safely Pocket Dimension as SCP-0492.", config.Debug, pluginName);
+                Log.Debug($"Player {ev.Player.Nickname} exited safely Pocket Dimension as SCP-049-2.", config.Debug, pluginName);
                 return false;
             }
             return true;
@@ -102,7 +98,7 @@ namespace Scp008
             }
         }
 
-        private static readonly Config config = Plugin.Singleton.pluginConfig;
+        private readonly Config config = Plugin.Singleton.pluginConfig;
 
         private readonly Translation translation = Plugin.Singleton.pluginTranslation;
 

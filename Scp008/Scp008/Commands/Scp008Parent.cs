@@ -52,7 +52,7 @@ namespace Scp008.Commands
 
         internal const string _command = "scp008";
 
-        internal const string _description = "Parent command. Type empty command for more information regarding subcommands.";
+        internal const string _description = "Parent command. Type an empty command for more information.";
 
         internal static readonly string[] _aliases = new[] { "008" };
 

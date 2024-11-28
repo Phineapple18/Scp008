@@ -64,25 +64,30 @@ namespace Scp008
 
         internal static bool TrySpawnAs0492(this Player player, DamageHandlerBase damageHandler)
         {
-            bool turnIntoZombie = false;
+            bool canSpawn = false;
+            bool isRevival = false;
             player.TryCureOf008(100, false);
             switch (damageHandler)
             {
                 case CustomReasonDamageHandler customHandler:
-                    turnIntoZombie = customHandler.ServerLogsText.Contains(Translation.InfectionDeathReason) && Config.TurnIntoZombie.Contains("Infection");
+                    canSpawn = customHandler.ServerLogsText.Contains(Translation.InfectionDeathReason) && Config.DeathReasons.Contains("Infection");
                     goto default;
                 case Scp049DamageHandler scp049Handler:
-                    turnIntoZombie = scp049Handler.Attacker.Hub != null && (scp049Handler.DamageSubType == AttackType.Scp0492 && Config.TurnIntoZombie.Contains("Scp0492") || scp049Handler.DamageSubType != AttackType.Scp0492 && Config.TurnIntoZombie.Contains("Scp049"));
+                    if (scp049Handler.Attacker.Hub != null)
+                    {
+                        isRevival = scp049Handler.DamageSubType != AttackType.Scp0492 && Config.DeathReasons.Contains("Scp049");
+                        canSpawn = scp049Handler.DamageSubType == AttackType.Scp0492 && Config.DeathReasons.Contains("Scp0492") || isRevival;
+                    }
                     goto default;
                 default:
-                    turnIntoZombie = turnIntoZombie || Config.TurnIntoZombie.Contains("Any");
+                    canSpawn = canSpawn || Config.DeathReasons.Contains("Any");
                     break;
             }
-            if (turnIntoZombie)
+            if (canSpawn)
             {
-                Timing.CallDelayed(Timing.WaitForOneFrame, () => player.SetRole(RoleTypeId.Scp0492, RoleChangeReason.RemoteAdmin));
+                Timing.CallDelayed(Timing.WaitForOneFrame, () => player.SetRole(RoleTypeId.Scp0492, isRevival ? RoleChangeReason.Revived : RoleChangeReason.RemoteAdmin));
                 RagdollManager.ServerSpawnRagdoll(player.ReferenceHub, damageHandler);
-                Log.Debug($"Player {player.Nickname} has been turned into SCP-0492.", Config.Debug, PluginName);
+                Log.Debug($"Player {player.Nickname} has been turned into SCP-049-2.", Config.Debug, PluginName);
                 return true;
             }
             return false;
