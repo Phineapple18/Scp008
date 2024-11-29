@@ -8,7 +8,7 @@ A plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) 
   * have messages shown to them after their health drops below configurable thresholds
   * be hurt by players from the same faction after their health drops below a configurable threshold (only on servers with Friendly Fire disabled)
   * become a Zombie upon death. Whether or not a player becomes a Zombie, depends on the reason(s) of death set in the config file (infection, SCP-049 attack, Zombie attack or any reason).
-- If infected player dies from SCP-049 attack, their death will count as a revival.
+- If infected player dies from SCP-049 attack and Scp049 is listen in config "DeathReasons", their death will count as a revival.
 
 ## Required plugins and dependencies (1.1.0)
 - [NWAPIPermissionSystem](https://github.com/CedModV2/NWAPIPermissionSystem/releases/tag/0.0.6) by ced777ric - plugin
