@@ -1,8 +1,8 @@
 # Scp008
-Plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) and optionally Zombie Flamingos to infect human players with SCP-008, causing them to gradually lose health. Depending on the config, infected players can have effects applied to them, cure the infection or turn into Zombies upon death.
+Plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) to infect human players with SCP-008, causing them to gradually lose health. Depending on the config, infected players can have effects applied to them, cure the infection or turn into Zombies upon death.
 
 ## Features
-- Zombies and Zombie FLamingos have a configurable chance to infect human players with SCP-008.
+- Zombies have a configurable chance to infect human players with SCP-008.
 - Infected player can:
   * have effects applied to them
   * have hints displayed after their health drops below configurable threshold(s)
@@ -10,7 +10,13 @@ Plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) an
   * become a Zombie upon death. Whether or not a player turns into a Zombie, depends on the cause(s) of death set in the config file (infection, SCP-049 attack, Zombie attack or any reason).
 - If infected player dies from SCP-049 attack and Scp049 is listed as death reason in the config, it will count as a revival.
 
-## Required plugins and dependencies (1.1.1)
+*<ins>Christmas Event Only</ins>*
+- Flamingos (SCP-1507) can optionally be infected (except Alpha Flamingo) with SCP-008.
+- Zombie Flamingos (SCP-1507-049) can optionally infect others with SCP-008.
+- Flamingos can't hurt infected flamingo.
+- Infected Flamingos don't have any hints displayed to them.
+
+## Required plugins and dependencies (1.2.0)
 - [NWAPIPermissionSystem](https://github.com/CedModV2/NWAPIPermissionSystem/releases/tag/0.0.6) by ced777ric - plugin
 - [Harmony 2.2.2.0](https://github.com/pardeike/Harmony/releases/tag/v2.2.2.0) by pardeike - dependency
 
@@ -31,7 +37,8 @@ Place the *Harmony* dll (net48) in "...\AppData\Roaming\SCP Secret Laboratory\Pl
 |scp008_effects|Dictionary\<string, float>|Bleeding, 90<br/> Concussed, 50<br/> Deafened, 20|Effect(s), that will be enabled once player health drops below certain values.|
 |cure_items|Dictionary\<ItemType, int>|SCP500: 100<br/> Medkit: 50|Item(s), that can cure the infection and their cure chance. Set between 0-100.|
 |ff_health_cutoff|float|20f|Health threshold of an infected player, below which they can be killed by a player from the same faction (only on servers with Firendly Fire disabled).|
-|death_reasons|List\<string>|- Infection<br/>- Scp0492<br/>- Scp049<br/>- Any|Cause(s) of death, that will cause an infected player to turn into a Zombie upon death. Leave empty to disable.|
+|death_reasons|List\<string>|- Infection<br/>- Scp0492<br/>- Scp049<br/>- ZombieFlamingo<br/>- Any|Cause(s) of death, that will cause an infected player to turn into a Zombie upon death. Leave empty to disable.|
+|can_flamingo_be_infected|bool|false|Can flamingos (except Alpha Flamingo) be infected with SCP-008?|
 |can_flamingo_infect|bool|false|Can flamingos infect with SCP-008?|
 
 ## Translation
