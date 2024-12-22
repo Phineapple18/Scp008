@@ -25,15 +25,18 @@ namespace Scp008.Patches
             Label skip = generator.DefineLabel();
             newInstructions.FindAll((CodeInstruction i) => i.opcode == OpCodes.Ldarg_1).ElementAt(4).labels.Add(skip);
             int index = newInstructions.FindIndex((CodeInstruction i) => i.opcode == OpCodes.Callvirt && (MethodInfo)i.operand == AccessTools.Method(typeof(StandardDamageHandler), "ProcessDamage"));
+            int offset = -2;
 
-            newInstructions.InsertRange(index, new List<CodeInstruction>
+            List<CodeInstruction> codeInstructions = new()
             {
-                new(OpCodes.Call, AccessTools.Method(typeof(ApplyDamagePatch), nameof(SkipProcessing), new[] { typeof(StandardDamageHandler), typeof(ReferenceHub) })),
-                new(OpCodes.Brtrue, skip),
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Ldarg_1)
-            });
+                new(OpCodes.Ldarg_1),
+                new(OpCodes.Call, AccessTools.Method(typeof(ApplyDamagePatch), nameof(SkipProcessing), new[] { typeof(StandardDamageHandler), typeof(ReferenceHub) })),
+                new(OpCodes.Brtrue, skip)
+            };
+            newInstructions.InsertRange(index + offset, codeInstructions);
 
+            newInstructions[index + offset + codeInstructions.Count].MoveLabelsTo(newInstructions[index + offset]);
             for (int i = 0; i < newInstructions.Count; i++)
             {
                 yield return newInstructions[i];
@@ -44,7 +47,7 @@ namespace Scp008.Patches
 
         private static bool SkipProcessing(StandardDamageHandler standardHandler, ReferenceHub hub)
         {
-            if (standardHandler is not AttackerDamageHandler attackHandler || Server.FriendlyFire)
+            if (Server.FriendlyFire || standardHandler is not AttackerDamageHandler attackHandler)
             {
                 return false;
             }
