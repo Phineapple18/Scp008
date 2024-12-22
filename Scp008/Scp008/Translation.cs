@@ -52,7 +52,7 @@ namespace Scp008
 
         public string[] CureAliases { get; set; } = Cure._aliases;
 
-        public string CureSuccess { get; set; } = "Succesfully cured %num% existing player(s) of Scp008";
+        public string CureSuccess { get; set; } = "Succesfully cured %num% existing player(s) of Scp008.";
 
         public string CureFail { get; set; } = "Command failed for %num% existing player(s) (not infected with Scp008)";
 
@@ -63,7 +63,7 @@ namespace Scp008
 
         public string[] InfectAliases { get; set; } = Infect._aliases;
 
-        public string InfectSuccess { get; set; } = "Succesfully infected %num% existing player(s) with Scp008";
+        public string InfectSuccess { get; set; } = "Succesfully infected %num% existing player(s) with Scp008.";
 
         public string InfectFail { get; set; } = "Command failed for %num% existing player(s) (already infected with Scp008 or ineligible)";
 
@@ -86,9 +86,6 @@ namespace Scp008
         public string Usage { get; set; } = "Usage";
 
         [Description("Translation for command responses.")]
-
-        public string DedicatedServer { get; set; } = "You can't use that command on Dedicated Server.";
-
         public string NoPerms { get; set; } = "You don't have permission to use that command.";
 
         public string NoPlayers { get; set; } = "Provided player(s) doesn't exist.";

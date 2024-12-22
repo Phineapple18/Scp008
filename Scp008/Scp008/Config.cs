@@ -28,7 +28,7 @@ namespace Scp008
         [Description("Damage of a Zombie attack leading to infection. Set below 0 to leave unchanged.")]
         public float ZombieDamage { get; set; } = 5f;
 
-        [Description("Effect(s), that will be enabled once player health drops below set values.")]
+        [Description("Effect(s), that will be enabled once player health drops below certain values.")]
         public Dictionary<string, float> Scp008Effects { get; set; } = new()
         {
             { "Bleeding", 90},
@@ -44,15 +44,22 @@ namespace Scp008
         };   
 
         [Description("Health threshold of an infected player, below which they can be killed by a player from the same faction (only on servers with Firendly Fire disabled).")]
-        public float FfHealthCutoff { get; set; } = 20f;  
+        public float FfHealthCutoff { get; set; } = 20f;
 
-        [Description("Cause(s) of death, that will lead an infected player to become a Zombie upon death. Leave empty to disable.")]
+        [Description("Cause(s) of death, that will cause an infected player to turn into a Zombie upon death. Leave empty to disable.")]
         public List<string> DeathReasons { get; set; } = new()
         {
             "Infection",
             "Scp0492",
             "Scp049",
+            "ZombieFlamingo",
             "Any"
         };
+
+        [Description("Can flamingos (except Alpha Flamingo) be infected with SCP-008?")]
+        public bool CanFlamingoBeInfected { get; set; } = true;
+
+        [Description("Can flamingos infect with SCP-008?")]
+        public bool CanFlamingoInfect { get; set; } = false;
     }
 }

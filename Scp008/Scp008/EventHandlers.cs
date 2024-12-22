@@ -33,7 +33,7 @@ namespace Scp008
         [PluginEvent(ServerEventType.PlayerDamage)]
         internal bool OnPlayerDamage(PlayerDamageEvent ev)
         {
-            if (ev.DamageHandler is AttackerDamageHandler adh && ev.Player != null && ev.Player.Role == RoleTypeId.Scp0492)
+            if (ev.DamageHandler is AttackerDamageHandler adh && ev.Player.CanInfect())
             {
                 if (ev.Target.TryInfectWith008(config.InfectionChance) && config.ZombieDamage >= 0)
                 {

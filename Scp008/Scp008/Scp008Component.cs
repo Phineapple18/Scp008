@@ -40,7 +40,7 @@ namespace Scp008
             {
                 player.Damage(config.InfectionDamage, translation.InfectionDeathReason);
                 string message = translation.InfectionMessages.LastOrDefault(m => player.Health <= m.Value).Key;
-                if (!receivedHints.Contains(message))
+                if (player.IsHuman && !receivedHints.Contains(message))
                 {
                     player.ReceiveHint(message, 5);
                     receivedHints.Add(message);

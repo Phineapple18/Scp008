@@ -13,6 +13,10 @@ using PlayerStatsSystem;
 using static PlayerStatsSystem.Scp049DamageHandler;
 using PluginAPI.Core;
 
+#if CHRISTMAS
+using PlayerRoles.PlayableScps.Scp1507;
+#endif
+
 namespace Scp008
 {
     public static class Scp008Extensions
@@ -21,14 +25,14 @@ namespace Scp008
         {
             if (!CanBeInfected(player))
             {
-                Log.Debug($"Player {player.Nickname} is either SCP, a Ghost or not a human and therefore can't be infected with Scp008.", Config.Debug, PluginName);
+                Log.Debug($"Player {player.Nickname} can't be infected with Scp008.", Config.Debug, PluginName);
                 return false;
             }
-            if (new Random().Next(99) < chance)
+            if (randInt.Next(99) < chance)
             {
                 try
                 {
-                    player.Get008Component().enabled = true;
+                    player.GetComponent<Scp008Component>().enabled = true;
                 }
                 catch (Exception)
                 {
@@ -48,10 +52,10 @@ namespace Scp008
                 Log.Debug($"Player {player.Nickname} is not infected with Scp008, therefore can't be cured.", Config.Debug, PluginName);
                 return false;
             }
-            if (new Random().Next(99) < chance)
+            if (randInt.Next(99) < chance)
             {
-                player.Get008Component().enabled = false;
-                if (showCureMessage)
+                player.GetComponent<Scp008Component>().enabled = false;
+                if (player.IsHuman && showCureMessage)
                 {
                     player.ReceiveHint(Translation.CuredMessage, 5);
                 }
@@ -79,15 +83,32 @@ namespace Scp008
                         canSpawn = scp049Handler.DamageSubType == AttackType.Scp0492 && Config.DeathReasons.Contains("Scp0492") || isRevival;
                     }
                     goto default;
+#if CHRISTMAS
+                case Scp1507DamageHandler scp1507Handler:
+                    canSpawn = scp1507Handler.Attacker.Role == RoleTypeId.ZombieFlamingo && Config.DeathReasons.Contains("Infection");
+                    goto default;
+#endif
                 default:
                     canSpawn = canSpawn || Config.DeathReasons.Contains("Any");
                     break;
             }
             if (canSpawn)
             {
-                Timing.CallDelayed(Timing.WaitForOneFrame, () => player.SetRole(RoleTypeId.Scp0492, isRevival ? RoleChangeReason.Revived : RoleChangeReason.RemoteAdmin));
+                string newRole = "SCP-049-2";
+                RoleChangeReason changeReason = isRevival ? RoleChangeReason.Revived : RoleChangeReason.RemoteAdmin;
+                if (player.IsHuman)
+                {
+                    Timing.CallDelayed(Timing.WaitForOneFrame, () => player.SetRole(RoleTypeId.Scp0492, changeReason));
+                }
+#if CHRISTMAS
+                else
+                {
+                    newRole = "Zombie Flamingo";
+                    Timing.CallDelayed(Timing.WaitForOneFrame, () => player.ReferenceHub.roleManager.ServerSetRole(RoleTypeId.ZombieFlamingo, changeReason, RoleSpawnFlags.None));
+                }
+#endif
                 RagdollManager.ServerSpawnRagdoll(player.ReferenceHub, damageHandler);
-                Log.Debug($"Player {player.Nickname} has been turned into SCP-049-2.", Config.Debug, PluginName);
+                Log.Debug($"Player {player.Nickname} has been turned into {newRole}.", Config.Debug, PluginName);
                 return true;
             }
             return false;
@@ -122,9 +143,42 @@ namespace Scp008
             return false;
         }
 
-        private static bool CanBeInfected(Player player)
+        private static bool CanBeInfected(this Player player)
         {
-            return !(player.IsScp008() || !player.IsHuman || player.TemporaryData.Contains("IsGhostSpectator"));
+            if (player.IsScp008() || player.TemporaryData.Contains("IsGhostSpectator"))
+            {
+                return false;
+            }
+            if (!player.IsHuman)
+            {
+#if CHRISTMAS
+                if (player.Role == RoleTypeId.Flamingo && Config.CanFlamingoBeInfected)
+                {
+                    return true;
+                }
+#endif
+                return false;
+            }
+            return true;
+        }
+
+        internal static bool CanInfect(this Player player)
+        {
+            if (player == null)
+            {
+                return false;
+            }
+            if (player.Role == RoleTypeId.Scp0492)
+            {
+                return true;
+            }
+#if CHRISTMAS
+            if (player.Role == RoleTypeId.ZombieFlamingo && Config.CanFlamingoInfect)
+            {
+                return true;
+            }
+#endif
+            return false;
         }
 
         public static bool IsScp008(this ReferenceHub hub)
@@ -135,11 +189,6 @@ namespace Scp008
         public static bool IsScp008(this Player player)
         {
             return player != null && player.TemporaryData.Contains(dataName);
-        }
-
-        private static Scp008Component Get008Component(this Player player)
-        {
-            return player.GameObject.GetComponent<Scp008Component>();
         }
 
         public const string dataName = "IsScp008";
@@ -157,6 +206,8 @@ namespace Scp008
            { nameof(Scp207), DeathTranslations.Scp207.Id },
            { nameof(SeveredHands), DeathTranslations.SeveredHands.Id }
         };
+
+        private static readonly Random randInt = new();
 
         public static IEnumerable<Player> List => Player.GetPlayers().Where(p => p.IsScp008());
         private static Config Config => Plugin.Singleton.pluginConfig;
