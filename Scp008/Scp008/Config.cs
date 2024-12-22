@@ -56,10 +56,10 @@ namespace Scp008
             "Any"
         };
 
-        [Description("Can flamingos (except Alpha Flamingo) be infected with SCP-008?")]
+        [Description("Can Flamingos (except Alpha Flamingo) be infected with SCP-008?")]
         public bool CanFlamingoBeInfected { get; set; } = true;
 
-        [Description("Can flamingos infect with SCP-008?")]
+        [Description("Can Zombie Flamingos infect with SCP-008?")]
         public bool CanFlamingoInfect { get; set; } = false;
     }
 }
