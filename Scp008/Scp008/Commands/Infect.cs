@@ -8,7 +8,6 @@ using CommandSystem;
 using NorthwoodLib.Pools;
 using NWAPIPermissionSystem;
 using PluginAPI.Core;
-using Utils;
 
 namespace Scp008.Commands
 {
@@ -40,7 +39,7 @@ namespace Scp008.Commands
                 Log.Debug("Command sender is null.", Config.Debug, commandName);
                 return false;
             }
-            if (!sender.CheckPermission("008.infect"))
+            if (!sender.CheckPermission("008.infection"))
             {
                 response = translation.NoPerms;
                 Log.Debug($"Player {sender.LogName} doesn't have required permission to use this command.", Config.Debug, commandName);
@@ -58,32 +57,23 @@ namespace Scp008.Commands
                 Log.Debug($"Player {sender.LogName} didn't provide arguments for command.", Config.Debug, commandName);
                 return false;
             }
-            List<ReferenceHub> validHubs = arguments.At(0).ToLower() == "all" ? ReferenceHub.AllHubs.ToList() : RAUtils.ProcessPlayerIdOrNamesList(arguments, 0, out string[] array);
-            if (validHubs.IsEmpty())
+            List<Player> validPlayers = arguments.At(0).ToLower() == "all" ? Player.GetPlayers() : Player.GetPlayers().Where(p => arguments.Contains(p.PlayerId.ToString())).ToList();
+            if (validPlayers.IsEmpty())
             {
                 response = translation.NoPlayers;
-                Log.Debug("Provided player(s) doesn't exist.", Config.Debug, commandName);
+                Log.Debug($"Player {sender.LogName} provided non-existent player(s).", Config.Debug, commandName);
                 return false;
             }
-            if (validHubs.Count == 1 && validHubs[0].isLocalPlayer)
-            {
-                response = translation.DedicatedServer;
-                Log.Debug($"Player {sender.LogName} attempted to use this command on Dedicated Server.", Config.Debug, commandName);
-                return false;
-            }
-            validHubs.Remove(Server.Instance.ReferenceHub);
             StringBuilder success = StringBuilderPool.Shared.Rent();
             StringBuilder failure = StringBuilderPool.Shared.Rent();
-            success.AppendLine($"{translation.InfectSuccess}:");
+            success.AppendLine(translation.InfectSuccess);
             failure.AppendLine($"{translation.InfectFail}:");
             int numS = 0;
             int numF = 0;
-            foreach (ReferenceHub hub in validHubs)
+            foreach (Player player in validPlayers)
             {
-                Player player = Player.Get(hub);
                 if (player.TryInfectWith008(100))
                 {
-                    success.AppendLine($"- {player.Nickname}");
                     numS++;
                     continue;
                 }
@@ -101,7 +91,7 @@ namespace Scp008.Commands
 
         internal const string _command = "infect";
 
-        internal const string _description = "Infect selected player(s) with Scp008. Separate entries with space.";
+        internal const string _description = "Infect chosen player(s) with Scp008. Separate entries with space.";
 
         internal static readonly string[] _aliases = new[] { "i" };
 

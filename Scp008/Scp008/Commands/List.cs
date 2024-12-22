@@ -48,7 +48,7 @@ namespace Scp008.Commands
 
         internal const string _command = "list";
 
-        internal const string _description = "Print list of all players infected with Scp008.";
+        internal const string _description = "Print a list of all players infected with Scp008.";
 
         internal static readonly string[] _aliases = new[] { "l" };
 
