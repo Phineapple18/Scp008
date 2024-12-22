@@ -38,8 +38,8 @@ Place the *Harmony* dll (net48) in "...\AppData\Roaming\SCP Secret Laboratory\Pl
 |cure_items|Dictionary\<ItemType, int>|SCP500: 100<br/> Medkit: 50|Item(s), that can cure the infection and their cure chance. Set between 0-100.|
 |ff_health_cutoff|float|20f|Health threshold of an infected player, below which they can be killed by a player from the same faction (only on servers with Firendly Fire disabled).|
 |death_reasons|List\<string>|- Infection<br/>- Scp0492<br/>- Scp049<br/>- ZombieFlamingo<br/>- Any|Cause(s) of death, that will cause an infected player to turn into a Zombie upon death. Leave empty to disable.|
-|can_flamingo_be_infected|bool|false|Can flamingos (except Alpha Flamingo) be infected with SCP-008?|
-|can_flamingo_infect|bool|false|Can flamingos infect with SCP-008?|
+|can_flamingo_be_infected|bool|false|Can Flamingos (except Alpha Flamingo) be infected with SCP-008?|
+|can_flamingo_infect|bool|false|Can Zombie Flamingos infect with SCP-008?|
 
 ## Translation
 The translation file is in the same folder as the config file and allows you to customize e.g:
