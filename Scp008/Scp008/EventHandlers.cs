@@ -61,7 +61,7 @@ namespace Scp008
             {
                 IFpcRole fpcRole = ev.Player.RoleBase as IFpcRole;
                 ev.Player.Position = Scp106PocketExitFinder.GetBestExitPosition(fpcRole);
-                Log.Debug($"Player {ev.Player.Nickname} exited safely Pocket Dimension as SCP-049-2.", config.Debug, pluginName);
+                Log.Debug($"Player {ev.Player.Nickname} exited safely Pocket Dimension as {ev.Player.Role}.", config.Debug, pluginName);
                 return false;
             }
             return true;

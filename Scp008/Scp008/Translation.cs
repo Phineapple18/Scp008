@@ -16,7 +16,7 @@ namespace Scp008
     public class Translation
     {
         [Description("MISCELLANOUS TRANSLATION. Don't translate words between two '%'." +
-                     "\n# Message shown upon becoming SCP-049-2.")]
+                     "\n# Message shown upon becoming Scp0492.")]
         public string SpawnHint { get; set; } = "<voffset=-7em>You can infect others with <color=red>SCP-008</color> by attacking them.</voffset>";
 
         [Description("Death reason shown, when player dies from the inspection.")]

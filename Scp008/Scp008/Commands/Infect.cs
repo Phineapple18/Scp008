@@ -79,7 +79,7 @@ namespace Scp008.Commands
                 }
                 failure.AppendLine($"- {player.Nickname}");
                 numF++;
-                Log.Debug($"Player {player.Nickname} is already infected with Scp008.", Config.Debug, commandName);
+                Log.Debug($"Player {player.Nickname} is ineligible to be infected with Scp008.", Config.Debug, commandName);
             }
             success.Replace("%num%", numS.ToString());
             failure.Replace("%num%", numF.ToString());

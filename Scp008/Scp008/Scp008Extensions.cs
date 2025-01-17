@@ -7,15 +7,12 @@ using System.Threading.Tasks;
 using CustomPlayerEffects;
 using MEC;
 using PlayerRoles;
+using PlayerRoles.PlayableScps.Scp1507;
 using PlayerRoles.PlayableScps.Scp3114;
 using PlayerRoles.Ragdolls;
 using PlayerStatsSystem;
 using static PlayerStatsSystem.Scp049DamageHandler;
 using PluginAPI.Core;
-
-#if CHRISTMAS
-using PlayerRoles.PlayableScps.Scp1507;
-#endif
 
 namespace Scp008
 {
@@ -83,30 +80,18 @@ namespace Scp008
                         canSpawn = scp049Handler.DamageSubType == AttackType.Scp0492 && Config.DeathReasons.Contains("Scp0492") || isRevival;
                     }
                     goto default;
-#if CHRISTMAS
                 case Scp1507DamageHandler scp1507Handler:
                     canSpawn = scp1507Handler.Attacker.Role == RoleTypeId.ZombieFlamingo && Config.DeathReasons.Contains("Infection");
                     goto default;
-#endif
                 default:
                     canSpawn = canSpawn || Config.DeathReasons.Contains("Any");
                     break;
             }
             if (canSpawn)
             {
-                string newRole = "SCP-049-2";
+                RoleTypeId newRole = player.IsHuman ? RoleTypeId.Scp0492 : RoleTypeId.ZombieFlamingo;
                 RoleChangeReason changeReason = isRevival ? RoleChangeReason.Revived : RoleChangeReason.RemoteAdmin;
-                if (player.IsHuman)
-                {
-                    Timing.CallDelayed(Timing.WaitForOneFrame, () => player.SetRole(RoleTypeId.Scp0492, changeReason));
-                }
-#if CHRISTMAS
-                else
-                {
-                    newRole = "Zombie Flamingo";
-                    Timing.CallDelayed(Timing.WaitForOneFrame, () => player.ReferenceHub.roleManager.ServerSetRole(RoleTypeId.ZombieFlamingo, changeReason, RoleSpawnFlags.None));
-                }
-#endif
+                Timing.CallDelayed(Timing.WaitForOneFrame, () => player.ReferenceHub.roleManager.ServerSetRole(newRole, changeReason, RoleSpawnFlags.None));
                 RagdollManager.ServerSpawnRagdoll(player.ReferenceHub, damageHandler);
                 Log.Debug($"Player {player.Nickname} has been turned into {newRole}.", Config.Debug, PluginName);
                 return true;
@@ -149,17 +134,11 @@ namespace Scp008
             {
                 return false;
             }
-            if (!player.IsHuman)
+            if (player.IsHuman || player.Role == RoleTypeId.Flamingo && Config.CanFlamingoBeInfected)
             {
-#if CHRISTMAS
-                if (player.Role == RoleTypeId.Flamingo && Config.CanFlamingoBeInfected)
-                {
-                    return true;
-                }
-#endif
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
 
         internal static bool CanInfect(this Player player)
@@ -168,16 +147,10 @@ namespace Scp008
             {
                 return false;
             }
-            if (player.Role == RoleTypeId.Scp0492)
+            if (player.Role == RoleTypeId.Scp0492 || player.Role == RoleTypeId.ZombieFlamingo && Config.CanFlamingoInfect)
             {
                 return true;
             }
-#if CHRISTMAS
-            if (player.Role == RoleTypeId.ZombieFlamingo && Config.CanFlamingoInfect)
-            {
-                return true;
-            }
-#endif
             return false;
         }
 
