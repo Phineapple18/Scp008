@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CustomPlayerEffects;
+using InventorySystem;
 using MEC;
 using PlayerRoles;
 using PlayerRoles.PlayableScps.Scp1507;
@@ -91,6 +92,7 @@ namespace Scp008
             {
                 RoleTypeId newRole = player.IsHuman ? RoleTypeId.Scp0492 : RoleTypeId.ZombieFlamingo;
                 RoleChangeReason changeReason = isRevival ? RoleChangeReason.Revived : RoleChangeReason.RemoteAdmin;
+                player.ReferenceHub.inventory.ServerDropEverything();
                 Timing.CallDelayed(Timing.WaitForOneFrame, () => player.ReferenceHub.roleManager.ServerSetRole(newRole, changeReason, RoleSpawnFlags.None));
                 RagdollManager.ServerSpawnRagdoll(player.ReferenceHub, damageHandler);
                 Log.Debug($"Player {player.Nickname} has been turned into {newRole}.", Config.Debug, PluginName);
