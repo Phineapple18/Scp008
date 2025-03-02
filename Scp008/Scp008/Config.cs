@@ -10,9 +10,6 @@ namespace Scp008
 {
     public class Config
     {
-        [Description("Should the plugin be enabled?")]
-        public bool IsEnabled { get; set; } = true;
-
         [Description("Should debug be enabled?")]
         public bool Debug { get; set; } = false;
 
@@ -28,12 +25,20 @@ namespace Scp008
         [Description("Damage of a Zombie attack leading to infection. Set below 0 to leave unchanged.")]
         public float ZombieDamage { get; set; } = 5f;
 
-        [Description("Effect(s), that will be enabled once player health drops below certain values.")]
-        public Dictionary<string, float> Scp008Effects { get; set; } = new()
+        [Description("Amount of health of infected player, that will trigger effect(s) and its intensity. A list of allowed effects can be found on plugin's github site.")]
+        public Dictionary<string, List<EffectParameters>> Scp008Effects { get; set; } = new()
         {
-            { "Bleeding", 90},
-            { "Concussed", 50},
-            { "Deafened", 20}
+            { "Bleeding", new() { new(){ Health = 90f, Intensity = 1 }} },
+            { 
+                "Blindness", new() 
+                { 
+                    new() { Health = 90f, Intensity = 10 },
+                    new() { Health = 60f, Intensity = 20 },
+                    new() { Health = 40f, Intensity = 30 } 
+                } 
+            },
+            { "Concussed", new() { new(){ Health = 50f, Intensity = 1 }} },
+            { "Deafened", new() { new(){ Health = 20f, Intensity = 1 }} }
         };
 
         [Description("Item(s), that can cure the infection and their cure chance. Set between 0-100.")]
@@ -41,7 +46,7 @@ namespace Scp008
         {
             { ItemType.SCP500, 100},
             { ItemType.Medkit, 50}
-        };   
+        };
 
         [Description("Health threshold of an infected player, below which they can be killed by a player from the same faction (only on servers with Firendly Fire disabled).")]
         public float FfHealthCutoff { get; set; } = 20f;
@@ -53,6 +58,8 @@ namespace Scp008
             "Scp0492",
             "Scp049",
             "ZombieFlamingo",
+            "Explosion",
+            "MicroHID",
             "Any"
         };
 
@@ -61,5 +68,11 @@ namespace Scp008
 
         [Description("Can Zombie Flamingos infect with SCP-008?")]
         public bool CanFlamingoInfect { get; set; } = false;
+    }
+
+    public class EffectParameters
+    {
+        public float Health { get; set; }
+        public byte Intensity { get; set; }
     }
 }
