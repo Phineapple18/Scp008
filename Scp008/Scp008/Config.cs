@@ -25,23 +25,20 @@ namespace Scp008
         [Description("Damage of a Zombie attack leading to infection. Set below 0 to leave unchanged.")]
         public float ZombieDamage { get; set; } = 5f;
 
-        [Description("Amount of health of infected player, that will trigger effect(s) and its intensity. A list of allowed effects can be found on plugin's github site.")]
+        [Description("Effects and their intensity, that will be enabled once player health drops below certain values.")]
         public Dictionary<string, List<EffectParameters>> Scp008Effects { get; set; } = new()
         {
             { "Bleeding", new() { new(){ Health = 90f, Intensity = 1 }} },
             { 
                 "Blindness", new() 
                 { 
-                    new() { Health = 90f, Intensity = 10 },
-                    new() { Health = 60f, Intensity = 20 },
-                    new() { Health = 40f, Intensity = 30 } 
+                    new() { Health = 60f, Intensity = 10 },
+                    new() { Health = 30f, Intensity = 20 } 
                 } 
-            },
-            { "Concussed", new() { new(){ Health = 50f, Intensity = 1 }} },
-            { "Deafened", new() { new(){ Health = 20f, Intensity = 1 }} }
+            }
         };
 
-        [Description("Item(s), that can cure the infection and their cure chance. Set between 0-100.")]
+        [Description("Items, that can cure the infection and their cure chance. Set between 0-100.")]
         public Dictionary<ItemType, int> CureItems { get; set; } = new()
         {
             { ItemType.SCP500, 100},
@@ -51,7 +48,7 @@ namespace Scp008
         [Description("Health threshold of an infected player, below which they can be killed by a player from the same faction (only on servers with Firendly Fire disabled).")]
         public float FfHealthCutoff { get; set; } = 20f;
 
-        [Description("Cause(s) of death, that will cause an infected player to turn into a Zombie upon death. Leave empty to disable.")]
+        [Description("Death causes, that will cause an infected player to turn into a Zombie upon death. Leave empty to disable.")]
         public List<string> DeathReasons { get; set; } = new()
         {
             "Infection",
