@@ -40,7 +40,7 @@ Place the *Harmony* dll in "...\AppData\Roaming\SCP Secret Laboratory\LabAPI-Bet
 
 **Allowed effects:*
 - Bleeding
-- Blindness
+- Blindness (won't work if player wears SCP-1344 or has severed eyes)
 - Blurred
 - Burned
 - CardiacArrest
