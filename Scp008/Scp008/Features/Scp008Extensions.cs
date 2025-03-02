@@ -1,0 +1,182 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using CustomPlayerEffects;
+using InventorySystem;
+using Log = LabApi.Features.Console.Logger;
+using LabApi.Features.Wrappers;
+using MEC;
+using PlayerRoles;
+using PlayerRoles.PlayableScps.Scp1507;
+using PlayerRoles.Ragdolls;
+using PlayerStatsSystem;
+using static PlayerStatsSystem.Scp049DamageHandler;
+using Utils.NonAllocLINQ;
+
+namespace Scp008.Features
+{
+    public static class Scp008Extensions
+    {
+        public static bool TryInfectWith008(this Player player, int chance)
+        {
+            if (!Scp008Extensions.CanBeInfected(player))
+            {
+                Log.Debug($"Player {player.Nickname} can't be infected with Scp008.", Config.Debug);
+                return false;
+            }
+            if (randInt.Next(99) < chance)
+            {
+                try
+                {
+                    player.ReferenceHub.GetComponent<Scp008Component>().enabled = true;
+                }
+                catch (Exception)
+                {
+                    player.GameObject.AddComponent<Scp008Component>();
+                }
+                Log.Debug($"Player {player.Nickname} has been infected with Scp008.", Config.Debug);
+                return true;
+            }
+            Log.Debug($"Infection chance failed for player {player.Nickname}.", Config.Debug);
+            return false;
+        }
+
+        public static bool TryCureOf008(this Player player, int chance, bool showCureMessage = true)
+        {
+            if (!player.IsScp008())
+            {
+                Log.Debug($"Player {player.Nickname} is not infected with Scp008, therefore can't be cured.", Config.Debug);
+                return false;
+            }
+            if (randInt.Next(99) < chance)
+            {
+                player.ReferenceHub.GetComponent<Scp008Component>().enabled = false;
+                if (player.IsHuman && showCureMessage)
+                {
+                    player.SendHint(Translation.CuredMessage, 5);
+                }
+                Log.Debug($"Player {player.Nickname} has been cured of Scp008.", Config.Debug);
+                return true;
+            }
+            Log.Debug($"Cure chance failed for player {player.Nickname}.", Config.Debug);
+            return false;
+        }
+
+        internal static bool TrySpawnAs0492(this Player player, DamageHandlerBase damageHandler)
+        {
+            bool canSpawn = false;
+            bool isRevival = false;
+            player.TryCureOf008(100, false);
+            switch (damageHandler)
+            {
+                case CustomReasonDamageHandler customHandler:
+                    canSpawn = customHandler.ServerLogsText.Contains(Translation.InfectionDeathReason) && Config.DeathReasons.Contains("Infection");
+                    goto default;
+                case DisruptorDamageHandler disruptorHandler:
+                    if (disruptorHandler.Disintegrate)
+                    {
+                        return false;
+                    }
+                    goto default;
+                case ExplosionDamageHandler:
+                    canSpawn = Config.DeathReasons.Contains("Explosion");
+                    goto default;
+                case MicroHidDamageHandler:
+                    canSpawn = Config.DeathReasons.Contains("MicroHID");
+                    goto default;
+                case Scp049DamageHandler scp049Handler:
+                    if (scp049Handler.Attacker.Hub != null)
+                    {
+                        isRevival = scp049Handler.DamageSubType != AttackType.Scp0492 && Config.DeathReasons.Contains("Scp049");
+                        canSpawn = scp049Handler.DamageSubType == AttackType.Scp0492 && Config.DeathReasons.Contains("Scp0492") || isRevival;
+                    }
+                    goto default;
+                case Scp1507DamageHandler scp1507Handler:
+                    canSpawn = scp1507Handler.Attacker.Role == RoleTypeId.ZombieFlamingo && Config.DeathReasons.Contains("Infection");
+                    goto default;
+                case UniversalDamageHandler universalHandler:
+                    if (universalHandler.TranslationId == DeathTranslations.Crushed.Id)
+                    {
+                        return false;
+                    }
+                    goto default;
+                case WarheadDamageHandler:
+                    return false;
+                default:
+                    canSpawn = canSpawn || Config.DeathReasons.Contains("Any");
+                    break;
+            }
+            if (canSpawn)
+            {
+                RoleTypeId newRole = player.IsHuman ? RoleTypeId.Scp0492 : RoleTypeId.ZombieFlamingo;
+                RoleChangeReason changeReason = isRevival ? RoleChangeReason.Revived : RoleChangeReason.RemoteAdmin;
+                player.ReferenceHub.inventory.ServerDropEverything();
+                RagdollManager.ServerSpawnRagdoll(player.ReferenceHub, damageHandler);
+                Timing.CallDelayed(0.2f, () => player.ReferenceHub.roleManager.ServerSetRole(newRole, changeReason, RoleSpawnFlags.None));
+                Log.Debug($"Player {player.Nickname} has been turned into {newRole}.", Config.Debug);
+                return true;
+            }
+            return false;
+        }
+
+        internal static bool IsEffectDamage(this DamageHandlerBase damageHandler, Player player)
+        {
+            if (Config.Scp008Effects == null)
+            {
+                return false;
+            }
+            if (damageHandler is UniversalDamageHandler udh && effectDamageType.TryGetValue(udh.TranslationId, out List<string> effects))
+            {
+                bool result = false;
+                ListExtensions.ForEach(effects, effect =>
+                {
+                    if (Config.Scp008Effects.TryGetValue(effect, out List<EffectParameters> parameters) && player.ActiveEffects.ToList().Any(e => e.name == effect && e.Intensity > 0) && parameters.Any(p => player.Health < p.Health))
+                    {
+                        result = true;
+                    }
+                });
+                return result;
+            }           
+            if (damageHandler is Scp049DamageHandler s049dh && s049dh.Attacker.Hub == null && s049dh.DamageSubType == AttackType.CardiacArrest)
+            {
+                return Config.Scp008Effects.TryGetValue(nameof(CardiacArrest), out List<EffectParameters> parameters) && parameters.Any(p => player.Health < p.Health);
+            }
+            return false;
+        }
+
+        private static bool CanBeInfected(this Player player)
+        {
+            return !player.IsScp008() && (player.IsHuman || player.Role == RoleTypeId.Flamingo && Config.CanFlamingoBeInfected);
+        }
+
+        internal static bool CanInfect(this Player player)
+        {
+            return player != null && (player.Role == RoleTypeId.Scp0492 || player.Role == RoleTypeId.ZombieFlamingo && Config.CanFlamingoInfect);
+        }
+
+        public static bool IsScp008(this Player player)
+        {
+            return player.ReferenceHub.IsScp008();
+        }
+
+        public static bool IsScp008(this ReferenceHub hub)
+        {
+            return hub.TryGetComponent(out Scp008Component component) && component.isActiveAndEnabled;
+        }
+
+        private static readonly Random randInt = new();
+        private static readonly Dictionary<byte, List<string>> effectDamageType = new()
+        {
+            { DeathTranslations.Bleeding.Id, new() { nameof(Bleeding), nameof(Hemorrhage) }},
+            { DeathTranslations.Poisoned.Id, new() { nameof(Poisoned) }},
+            { DeathTranslations.Scp207.Id, new() { nameof(Scp207) }}
+        };
+
+        public static IEnumerable<Player> List => Player.List.Where(p => p.IsScp008());
+        private static Config Config => MainClass.Instance.pluginConfig;
+        private static Translation Translation => MainClass.Instance.pluginTranslation;
+    }
+}

@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CommandSystem;
+using Log = LabApi.Features.Console.Logger;
 using NorthwoodLib.Pools;
-using PluginAPI.Core;
+using Utils.NonAllocLINQ;
 
 namespace Scp008.Commands
 {
@@ -16,11 +17,10 @@ namespace Scp008.Commands
         public Scp008Parent()
         {
             translation = Translation.AccessTranslation();
-            commandName = $"{Translation.pluginName}.{this.GetType().Name}";
-            Command = !string.IsNullOrWhiteSpace(translation.Scp008parentCommand) ? translation.Scp008parentCommand : _command;
+            Command = translation.Scp008parentCommand ?? _command;
             Description = translation.Scp008parentDescription;
             Aliases = translation.Scp008parentAliases;
-            Log.Debug($"Registered {this.Command} parent command.", translation.Debug, Translation.pluginName);
+            Log.Debug($"Registered {this.Command} parent command.", translation.Debug);
             this.LoadGeneratedCommands();
         }
 
@@ -29,35 +29,30 @@ namespace Scp008.Commands
             this.RegisterCommand(new Cure(translation.CureCommand, translation.CureDescription, translation.CureAliases));
             this.RegisterCommand(new Infect(translation.InfectCommand, translation.InfectDescription, translation.InfectAliases));
             this.RegisterCommand(new List(translation.ListCommand, translation.ListDescription, translation.ListAliases));
-            Log.Debug($"Registered {this.AllCommands.Count()} command(s) for {this.Command} parent command.", translation.Debug, Translation.pluginName);
+            Log.Debug($"Registered {this.AllCommands.Count()} command(s) for {this.Command} parent command.", translation.Debug);
         }
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            if (Plugin.Singleton == null)
+            if (MainClass.Instance == null)
             {
                 response = translation.NotEnabled;
-                Log.Debug($"Plugin {Translation.pluginName} is not enabled.", translation.Debug, commandName);
+                Log.Debug($"Plugin Scp008 is not enabled.", translation.Debug);
                 return false;
             }
             StringBuilder stringBuilder = StringBuilderPool.Shared.Rent();
             stringBuilder.AppendLine($"{Description} {translation.Subcommands}:");
-            foreach (ICommand command in this.AllCommands)
+            ListExtensions.ForEach(this.AllCommands.ToList(), command =>
             {
                 stringBuilder.AppendLine($"- {command.Command} | {translation.Aliases}: {(command.Aliases == null || command.Aliases.IsEmpty() ? "" : string.Join(", ", command.Aliases))} | {translation.Description}: {command.Description}");
-            }
+            });
             response = StringBuilderPool.Shared.ToStringReturn(stringBuilder).TrimEnd(Array.Empty<char>());
             return true;
         }
 
         internal const string _command = "scp008";
-
         internal const string _description = "Parent command for handling SCP-008.";
-
         internal static readonly string[] _aliases = new[] { "008" };
-
-        private readonly string commandName;
-
         private readonly Translation translation;
 
         public override string Command { get; }
