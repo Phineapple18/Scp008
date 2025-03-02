@@ -1,5 +1,5 @@
 # Scp008 (2.0.0)
-Plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) to infect human players with SCP-008, causing them to gradually lose health. Depending on the config, infected players can have effects applied to them, cure the infection or turn into Zombies upon death.
+Plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) to infect human players with SCP-008, causing them to gradually lose health. Infected players can have effects applied to them, cure the infection or turn into Zombies upon death.
 
 ## Features
 - Zombies have a configurable chance to infect human players with SCP-008.
@@ -7,8 +7,8 @@ Plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) to
   * have effects applied to them
   * have hints displayed after their health drops below configurable thresholds
   * be hurt by players from the same faction after their health drops below configurable threshold (only on servers with Friendly Fire disabled)
-  * become a Zombie upon death. Whether or not a player turns into a Zombie, depends on the causes of death set in the config file.
-- If infected player dies from SCP-049 attack and Scp049 is listed as death reason in the config, it will count as a revival.
+  * become a Zombie upon death, depending on the cause of death.
+- If infected player dies from SCP-049 attack and Scp049 is listed as a death reason in the config, it will count as a revival.
 
 *<ins>Christmas Event Only</ins>*
 - Flamingos (SCP-1507) can optionally be infected (except Alpha Flamingo) with SCP-008.
