@@ -7,7 +7,7 @@ Plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) to
   * have effects applied to them
   * have hints displayed after their health drops below configurable thresholds
   * be hurt by players from the same faction after their health drops below configurable threshold (only on servers with Friendly Fire disabled)
-  * become a Zombie upon death, depending on the cause of death.
+  * become a Zombie upon death, depending on the death cause.
 - If infected player dies from SCP-049 attack and Scp049 is listed as a death reason in the config, it will count as a revival.
 
 *<ins>Christmas Event Only</ins>*
@@ -34,7 +34,7 @@ Place the *Harmony* dll in "...\AppData\Roaming\SCP Secret Laboratory\LabAPI-Bet
 |scp008_effects*|Dictionary\<string, float>|Bleeding:<br/>-health: 90<br/>&nbsp;&nbsp;intensity: 1<br/>Blindness:<br/>-health: 60<br/>&nbsp;&nbsp;intensity: 10<br/>-health: 30<br/>&nbsp;&nbsp;intensity: 20|Effects and their intensity, that will be enabled once player health drops below certain values.|
 |cure_items|Dictionary\<ItemType, int>|SCP500: 100<br/> Medkit: 50|Items, that can cure the infection and their cure chance. Set between 0-100.|
 |ff_health_cutoff|float|20f|Health threshold of an infected player, below which they can be killed by a player from the same faction (only on servers with Firendly Fire disabled).|
-|death_reasons**|List\<string>|-Infection<br/>-Scp0492<br/>-ZombieFlamingo|Death causes, that will cause an infected player to turn into a Zombie upon death. Leave empty to disable.|
+|death_reasons**|List\<string>|-Infection<br/>-Scp0492<br/>-ZombieFlamingo|Death causes, that will turn an infected player into a Zombie upon death. Leave empty to disable.|
 |can_flamingo_be_infected|bool|false|Can Flamingos (except Alpha Flamingo) be infected with SCP-008?|
 |can_flamingo_infect|bool|false|Can Zombie Flamingos infect with SCP-008?|
 
@@ -54,16 +54,14 @@ Place the *Harmony* dll in "...\AppData\Roaming\SCP Secret Laboratory\LabAPI-Bet
 - Scp207
 - Slowness
 
-**Possible Causes of death leading to infection:*
+**Possible death causes, leading to infection:*
 - Infection
 - Scp0492
 - Scp049
 - ZombieFlamingo
 - Explosion
 - MicroHID
-- Any
-
-Damage from warhead or 
+- Any (except warhead and disruptor on disintegration mode)
 
 ## Translation
 The translation file is in the same folder as the config file and allows you to customize e.g:
