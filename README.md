@@ -1,4 +1,4 @@
-# Scp008 (2.0.0)
+# Scp008 (2.0.1)
 Plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) to infect human players with SCP-008, causing them to gradually lose health. Infected players can have effects applied to them, cure the infection or turn into Zombies upon death.
 
 ## Features
@@ -20,8 +20,8 @@ Plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) to
 - [Harmony 2.2.2.0 (net48)](https://github.com/pardeike/Harmony/releases/tag/v2.2.2.0) by pardeike - dependency
 
 ## Installation
-Place *Scp008* dll in "...\AppData\Roaming\SCP Secret Laboratory\LabAPI-Beta\plugins".<br/>
-Place the *Harmony* dll in "...\AppData\Roaming\SCP Secret Laboratory\LabAPI-Beta\dependencies".
+Place *Scp008* dll in "...\AppData\Roaming\SCP Secret Laboratory\LabAPI-Beta\plugins\global OR port_number".<br/>
+Place the *Harmony* dll in "...\AppData\Roaming\SCP Secret Laboratory\LabAPI-Beta\dependencies\global OR port_number".
 
 ## Config
 |Name|Type|Default value|Description|
@@ -68,7 +68,7 @@ The translation file is in the same folder as the config file and allows you to 
 - hints displayed to infected players
 - command names, aliases, descriptons and responses
 
-*IMPORTANT:* Make sure not to duplicate command names and/or aliases, if you translate them.
+*IMPORTANT:* If you translate command names and/or aliases (except subcommands), make sure not to duplicate them.
 
 ## Remote Admin commands
 ### scp008
