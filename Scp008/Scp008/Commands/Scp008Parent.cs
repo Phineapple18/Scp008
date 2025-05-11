@@ -37,15 +37,15 @@ namespace Scp008.Commands
             if (MainClass.Instance == null)
             {
                 response = translation.NotEnabled;
-                Log.Debug($"Plugin Scp008 is not enabled.", translation.Debug);
+                Log.Debug("Plugin Scp008 is not enabled.", translation.Debug);
                 return false;
             }
             StringBuilder stringBuilder = StringBuilderPool.Shared.Rent();
             stringBuilder.AppendLine($"{Description} {translation.Subcommands}:");
-            ListExtensions.ForEach(this.AllCommands.ToList(), command =>
+            foreach (ICommand command in this.AllCommands)
             {
                 stringBuilder.AppendLine($"- {command.Command} | {translation.Aliases}: {(command.Aliases == null || command.Aliases.IsEmpty() ? "" : string.Join(", ", command.Aliases))} | {translation.Description}: {command.Description}");
-            });
+            }
             response = StringBuilderPool.Shared.ToStringReturn(stringBuilder).TrimEnd(Array.Empty<char>());
             return true;
         }

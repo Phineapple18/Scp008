@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.IO;
+
 using CustomPlayerEffects;
-using InventorySystem;
+using GhostSpectator.Features.Extensions;
 using Log = LabApi.Features.Console.Logger;
 using LabApi.Features.Wrappers;
 using MEC;
 using PlayerRoles;
 using PlayerRoles.PlayableScps.Scp1507;
-using PlayerRoles.Ragdolls;
 using PlayerStatsSystem;
 using static PlayerStatsSystem.Scp049DamageHandler;
 using Utils.NonAllocLINQ;
@@ -22,7 +23,16 @@ namespace Scp008.Features
     {
         public static bool TryInfectWith008(this Player player, int chance)
         {
-            if (!Scp008Extensions.CanBeInfected(player))
+            bool canBeInfected = player.CanBeInfected();
+            try
+            {
+                canBeInfected = canBeInfected && !Scp008Extensions.IsGhost(player);
+            }
+            catch (FileNotFoundException)
+            {
+                Log.Debug($"GhostSpectator not found, continuing.", Config.Debug);
+            }
+            if (!canBeInfected)
             {
                 Log.Debug($"Player {player.Nickname} can't be infected with Scp008.", Config.Debug);
                 return false;
@@ -33,7 +43,7 @@ namespace Scp008.Features
                 {
                     player.ReferenceHub.GetComponent<Scp008Component>().enabled = true;
                 }
-                catch (Exception)
+                catch (NullReferenceException)
                 {
                     player.GameObject.AddComponent<Scp008Component>();
                 }
@@ -65,7 +75,7 @@ namespace Scp008.Features
             return false;
         }
 
-        internal static bool TrySpawnAs0492(this Player player, DamageHandlerBase damageHandler)
+        internal static bool TrySpawnAsZombie(this Player player, DamageHandlerBase damageHandler)
         {
             bool canSpawn = false;
             bool isRevival = false;
@@ -73,7 +83,7 @@ namespace Scp008.Features
             switch (damageHandler)
             {
                 case CustomReasonDamageHandler customHandler:
-                    canSpawn = customHandler.ServerLogsText.Contains(Translation.InfectionDeathReason) && Config.DeathReasons.Contains("Infection");
+                    canSpawn = customHandler.DeathScreenText.Contains(Translation.InfectionDeathReason) && Config.DeathReasons.Contains("Infection");
                     goto default;
                 case DisruptorDamageHandler disruptorHandler:
                     if (disruptorHandler.Disintegrate)
@@ -91,11 +101,11 @@ namespace Scp008.Features
                     if (scp049Handler.Attacker.Hub != null)
                     {
                         isRevival = scp049Handler.DamageSubType != AttackType.Scp0492 && Config.DeathReasons.Contains("Scp049");
-                        canSpawn = scp049Handler.DamageSubType == AttackType.Scp0492 && Config.DeathReasons.Contains("Scp0492") || isRevival;
+                        canSpawn = isRevival || scp049Handler.DamageSubType == AttackType.Scp0492 && Config.DeathReasons.Contains("Scp0492");
                     }
                     goto default;
                 case Scp1507DamageHandler scp1507Handler:
-                    canSpawn = scp1507Handler.Attacker.Role == RoleTypeId.ZombieFlamingo && Config.DeathReasons.Contains("Infection");
+                    canSpawn = scp1507Handler.Attacker.Role == RoleTypeId.ZombieFlamingo && Config.DeathReasons.Contains("ZombieFlamingo");
                     goto default;
                 case UniversalDamageHandler universalHandler:
                     if (universalHandler.TranslationId == DeathTranslations.Crushed.Id)
@@ -113,9 +123,9 @@ namespace Scp008.Features
             {
                 RoleTypeId newRole = player.IsHuman ? RoleTypeId.Scp0492 : RoleTypeId.ZombieFlamingo;
                 RoleChangeReason changeReason = isRevival ? RoleChangeReason.Revived : RoleChangeReason.RemoteAdmin;
-                player.ReferenceHub.inventory.ServerDropEverything();
-                RagdollManager.ServerSpawnRagdoll(player.ReferenceHub, damageHandler);
-                Timing.CallDelayed(0.2f, () => player.ReferenceHub.roleManager.ServerSetRole(newRole, changeReason, RoleSpawnFlags.None));
+                player.DropEverything();
+                Ragdoll.SpawnRagdoll(player, damageHandler);
+                Timing.CallDelayed(0.2f, () => player.SetRole(newRole, changeReason, RoleSpawnFlags.None));
                 Log.Debug($"Player {player.Nickname} has been turned into {newRole}.", Config.Debug);
                 return true;
             }
@@ -131,9 +141,9 @@ namespace Scp008.Features
             if (damageHandler is UniversalDamageHandler udh && effectDamageType.TryGetValue(udh.TranslationId, out List<string> effects))
             {
                 bool result = false;
-                ListExtensions.ForEach(effects, effect =>
+                effects.ForEach<string>(effect =>
                 {
-                    if (Config.Scp008Effects.TryGetValue(effect, out List<EffectParameters> parameters) && player.ActiveEffects.ToList().Any(e => e.name == effect && e.Intensity > 0) && parameters.Any(p => player.Health < p.Health))
+                    if (Config.Scp008Effects.TryGetValue(effect, out List<EffectParameters> parameters) && player.ActiveEffects.Any(e => e.name == effect && e.Intensity > 0) && parameters.Any(p => player.Health < p.Health))
                     {
                         result = true;
                     }
@@ -150,6 +160,11 @@ namespace Scp008.Features
         private static bool CanBeInfected(this Player player)
         {
             return !player.IsScp008() && (player.IsHuman || player.Role == RoleTypeId.Flamingo && Config.CanFlamingoBeInfected);
+        }
+
+        private static bool IsGhost(Player player)
+        {
+            return !player.IsGhost();
         }
 
         internal static bool CanInfect(this Player player)

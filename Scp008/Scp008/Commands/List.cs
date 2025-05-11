@@ -42,7 +42,7 @@ namespace Scp008.Commands
                 Log.Debug($"Player {sender.LogName} doesn't have required permission to use this command.", Config.Debug);
                 return false;
             }
-            response = $"{translation.ListSuccess.Replace("%num%", Scp008Extensions.List.Count().ToString())}:\n- {string.Join("\n- ", Scp008Extensions.List.Select(p => p.Nickname))}";
+            response = $"{translation.ListSuccess.Replace("%count%", Scp008Extensions.List.Count().ToString())}:\n- {string.Join("\n- ", Scp008Extensions.List.Select(p => p.Nickname))}";
             return true;
         }
 

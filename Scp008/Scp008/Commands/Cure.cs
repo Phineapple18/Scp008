@@ -31,7 +31,7 @@ namespace Scp008.Commands
             if (MainClass.Instance == null)
             {
                 response = translation.NotEnabled;
-                Log.Debug($"Plugin Scp008 is not enabled.", translation.Debug);
+                Log.Debug("Plugin Scp008 is not enabled.", translation.Debug);
                 return false;
             }
             if (sender == null)
@@ -52,7 +52,7 @@ namespace Scp008.Commands
                 Log.Debug($"Player {sender.LogName} didn't provide arguments for command.", Config.Debug);
                 return false;
             }
-            List<Player> validPlayers = arguments.At(0).ToLower() == "all" ? Player.List.ToList() : Player.List.Where(p => arguments.Contains(p.PlayerId.ToString())).ToList();
+            List<Player> validPlayers = arguments.At(0).ToLower() == "all" ? Player.ReadyList.ToList() : Player.ReadyList.Where(p => arguments.Contains(p.PlayerId.ToString())).ToList();
             if (validPlayers.IsEmpty())
             {
                 response = translation.NoPlayers;
@@ -64,7 +64,7 @@ namespace Scp008.Commands
             success.AppendLine(translation.CureSuccess);
             failure.AppendLine($"{translation.CureFail}:");
             int[] num = new int[2] { 0, 0 };
-            ListExtensions.ForEach(validPlayers, player =>
+            validPlayers.ForEach<Player>(player =>
             {
                 if (player.TryCureOf008(100))
                 {
@@ -75,12 +75,12 @@ namespace Scp008.Commands
                 num[0]++;
                 Log.Debug($"Player {player.Nickname} is not infected with Scp008.", Config.Debug);
             });
-            success.Replace("%num%", num[1].ToString());
-            failure.Replace("%num%", num[0].ToString());
+            success.Replace("%count%", num[1].ToString());
+            failure.Replace("%count%", num[0].ToString());
             StringBuilder result = num[1] == 0 ? failure : num[0] == 0 ? success : success.Append(failure);
             response = StringBuilderPool.Shared.ToStringReturn(result).TrimEnd(Array.Empty<char>());
             Log.Debug($"Player {sender.LogName} cured successfully ({num[1]}) and unsuccessfully ({num[0]}) players of Scp008.", Config.Debug);
-            return true;
+            return num[1] > 0;
         }
 
         internal const string _command = "cure";

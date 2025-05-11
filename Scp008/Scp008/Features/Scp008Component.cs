@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using CustomPlayerEffects;
 using InventorySystem;
 using InventorySystem.Items;
-using InventorySystem.Items.Usables.Scp1344;
+using Scp1344Item = InventorySystem.Items.Usables.Scp1344.Scp1344Item;
 using Log = LabApi.Features.Console.Logger;
 using LabApi.Features.Wrappers;
 using UnityEngine;
@@ -20,7 +20,7 @@ namespace Scp008.Features
     {
         public void Awake()
         {
-            player = Player.Get(ReferenceHub.GetHub(transform.root.gameObject));
+            player = Player.Get(transform.root.gameObject);
             Log.Debug($"Created a Scp008Component for player {player.Nickname}.", config.Debug);
         }
 
@@ -35,12 +35,12 @@ namespace Scp008.Features
             config.Scp008Effects?.ForEach(effect =>
             {
                 EffectParameters parameters = effect.Value.OrderByDescending(e => e.Health).LastOrDefault(e => player.Health < e.Health);
-                if (parameters != null && player.ReferenceHub.playerEffectsController.TryGetEffect(effect.Key, out StatusEffectBase effectBase) && effectBase.Intensity != parameters.Intensity)
+                if (parameters != null && player.TryGetEffect(effect.Key, out StatusEffectBase effectBase) && effectBase.Intensity != parameters.Intensity)
                 {
-                    if (effect.Key == nameof(Blindness) 
-                    && (player.ActiveEffects.ToList().Any(e => e.name == nameof(SeveredEyes))
-                    || player.ReferenceHub.inventory.TryGetInventoryItem(ItemType.SCP1344, out ItemBase item)
-                    && (byte)(item as Scp1344Item).Status > 2 && (byte)(item as Scp1344Item).Status < 8))
+                    if (effectBase is Blindness
+                    && (player.ActiveEffects.Any(e => e is SeveredEyes)
+                    || player.Inventory.TryGetInventoryItem(ItemType.SCP1344, out ItemBase item)
+                    && Enumerable.Range(2, 8).Contains((byte)(item as Scp1344Item).Status)))
                     {
                         return;
                     }
@@ -51,11 +51,13 @@ namespace Scp008.Features
             if (intervalTime <= 0)
             {
                 player.Damage(config.InfectionDamage, translation.InfectionDeathReason);
-                string message = translation.InfectionMessages.LastOrDefault(m => player.Health <= m.Key).Value;
-                if (player.IsHuman && !receivedHints.Contains(message))
+                if (player.IsHuman)
                 {
-                    player.SendHint(message, 5);
-                    receivedHints.Add(message);
+                    string message = translation.InfectionMessages.LastOrDefault(m => player.Health <= m.Key).Value;
+                    if (receivedHints.AddIfNotContains(message))
+                    {
+                        player.SendHint(message, 5);
+                    }
                 }
                 intervalTime += config.InfectionInterval;
             }
