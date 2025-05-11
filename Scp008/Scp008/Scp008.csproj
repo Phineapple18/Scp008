@@ -46,6 +46,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(SecretLabSteam)\CommandSystem.Core.dll</HintPath>
     </Reference>
+    <Reference Include="GhostSpectator">
+      <HintPath>$(SecretLabSteam)\LabAPI-Beta\plugins\GhostSpectator.dll</HintPath>
+    </Reference>
     <Reference Include="LabApi">
       <HintPath>$(SecretLabSteam)\LabApi.dll</HintPath>
     </Reference>
@@ -88,13 +91,13 @@
     <Compile Include="Features\Scp008Component.cs" />
     <Compile Include="Features\Scp008Extensions.cs" />
     <Compile Include="MainClass.cs" />
-    <Compile Include="Features\Patches.cs" />
+    <Compile Include="Patches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Translation.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SecretLabFiles)\LabAPI-Beta\plugins\$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SecretLabFiles)\LabAPI-Beta\plugins\7777\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

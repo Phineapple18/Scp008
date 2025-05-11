@@ -47,21 +47,21 @@ namespace Scp008
         public string CureCommand { get; set; } = Cure._command;
         public string CureDescription { get; set; } = Cure._description;
         public string[] CureAliases { get; set; } = Cure._aliases;
-        public string CureSuccess { get; set; } = "Succesfully cured %num% existing player(s) of Scp008.";
-        public string CureFail { get; set; } = "Command failed for %num% existing player(s) (not infected with Scp008)";
+        public string CureSuccess { get; set; } = "Succesfully cured %count% existing player(s) of Scp008.";
+        public string CureFail { get; set; } = "Command failed for %count% existing player(s) (not infected with Scp008)";
 
         [Description("Infect command.")]
         public string InfectCommand { get; set; } = Infect._command;
         public string InfectDescription { get; set; } = Infect._description;
         public string[] InfectAliases { get; set; } = Infect._aliases;
-        public string InfectSuccess { get; set; } = "Succesfully infected %num% existing player(s) with Scp008.";
-        public string InfectFail { get; set; } = "Command failed for %num% existing player(s) (already infected with Scp008 or ineligible)";
+        public string InfectSuccess { get; set; } = "Succesfully infected %count% existing player(s) with Scp008.";
+        public string InfectFail { get; set; } = "Command failed for %count% existing player(s) (already infected with Scp008 or ineligible)";
 
         [Description("List command.")]
         public string ListCommand { get; set; } = List._command;
         public string ListDescription { get; set; } = List._description;
         public string[] ListAliases { get; set; } = List._aliases;
-        public string ListSuccess { get; set; } = "List of players infected with Scp008 (%num%)";
+        public string ListSuccess { get; set; } = "List of players infected with Scp008 (%count%)";
 
         [Description("Translation for command interface.")]
         public string Aliases { get; set; } = "Aliases";
@@ -78,8 +78,11 @@ namespace Scp008
 
         internal static Translation AccessTranslation()
         {
-            string filePath = Path.Combine(PathManager.Configs.FullName, "Scp008", "translation.yml");
-            return File.Exists(filePath) ? YamlParser.Deserializer.Deserialize<Translation>(File.ReadAllText(filePath)) : new();
+            return translation ??= File.Exists(filePath) ? YamlParser.Deserializer.Deserialize<Translation>(File.ReadAllText(filePath)) : new();
         }
+
+        private static Translation translation;
+
+        private static readonly string filePath = Path.Combine(PathManager.Configs.FullName, "Scp008", "translation.yml");
     }
 }

@@ -48,7 +48,7 @@ namespace Scp008
         [Description("Health threshold of an infected player, below which they can be killed by a player from the same faction (only on servers with Firendly Fire disabled).")]
         public float FfHealthCutoff { get; set; } = 20f;
 
-        [Description("Death causes, that will cause an infected player to turn into a Zombie upon death. Leave empty to disable.")]
+        [Description("Death causes, that will turn an infected player into a Zombie upon death. Leave empty to disable.")]
         public List<string> DeathReasons { get; set; } = new()
         {
             "Infection",

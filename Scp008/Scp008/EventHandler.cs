@@ -15,6 +15,7 @@ using PlayerRoles.PlayableScps.Scp106;
 using PlayerStatsSystem;
 using static PlayerStatsSystem.Scp049DamageHandler;
 using Scp008.Features;
+using Object = UnityEngine.Object;
 
 namespace Scp008
 {
@@ -30,7 +31,7 @@ namespace Scp008
 
         public override void OnPlayerDying(PlayerDyingEventArgs ev)
         {
-            if (ev.Player.IsScp008() && ev.Player.TrySpawnAs0492(ev.DamageHandler))
+            if (ev.Player.IsScp008() && ev.Player.TrySpawnAsZombie(ev.DamageHandler))
             {
                 ev.IsAllowed = false;
             }
@@ -38,14 +39,13 @@ namespace Scp008
 
         public override void OnPlayerHurting(PlayerHurtingEventArgs ev)
         {
-            if (ev.DamageHandler is AttackerDamageHandler adh && ev.Player.CanInfect() && ev.Target.TryInfectWith008(config.InfectionChance) && config.ZombieDamage >= 0)
+            if (ev.DamageHandler is AttackerDamageHandler adh && ev.Attacker.CanInfect() && ev.Player.TryInfectWith008(config.InfectionChance) && config.ZombieDamage >= 0)
             {    
-                Timing.CallDelayed(Timing.WaitForOneFrame, () => ev.Target.Damage(new Scp049DamageHandler(new Footprint(ev.Player.ReferenceHub), config.ZombieDamage, AttackType.Scp0492)));
-                Hitmarker.SendHitmarkerDirectly(ev.Player.ReferenceHub, 1f);
+                Timing.CallDelayed(Timing.WaitForOneFrame, () => ev.Player.Damage(new Scp049DamageHandler(new Footprint(ev.Attacker.ReferenceHub), config.ZombieDamage, AttackType.Scp0492)));
+                ev.Attacker.SendHitMarker();
                 ev.IsAllowed = false;
-                return;
             }
-            if (ev.Target.IsScp008() && ev.DamageHandler.IsEffectDamage(ev.Target))
+            if (ev.Player.IsScp008() && ev.DamageHandler.IsEffectDamage(ev.Player))
             {
                 ev.IsAllowed = false;
             }
@@ -65,7 +65,7 @@ namespace Scp008
         {
             if (ev.Player != null && ev.Player.ReferenceHub.TryGetComponent(out Scp008Component component))
             {
-                UnityEngine.Object.Destroy(component);
+                Object.Destroy(component);
                 Log.Debug($"Destroyed a Scp008Component for player {ev.Player.Nickname}.", config.Debug);
             }
         }
@@ -74,16 +74,13 @@ namespace Scp008
         {
             if (ev.Player.Role == RoleTypeId.Scp0492)
             {
-                Timing.CallDelayed(1f, delegate ()
-                {
-                    ev.Player.SendHint(translation.SpawnHint, 10f);
-                });
+                Timing.CallDelayed(1f, () => ev.Player.SendHint(translation.SpawnHint, 10f));
             }
         }
 
         public override void OnPlayerUsedItem(PlayerUsedItemEventArgs ev)
         {
-            if ((ev.Item.Category == ItemCategory.Medical || ev.Item.Type == ItemType.SCP500) && config.CureItems.TryGetValue(ev.Item.Type, out int chance) && ev.Player.IsScp008())
+            if (ev.Player.IsScp008() && (ev.UsableItem.Category == ItemCategory.Medical || ev.UsableItem.Type == ItemType.SCP500) && config.CureItems.TryGetValue(ev.UsableItem.Type, out int chance))
             {
                 ev.Player.TryCureOf008(chance);
             }
