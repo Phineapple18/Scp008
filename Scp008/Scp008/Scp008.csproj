@@ -47,7 +47,7 @@
       <HintPath>$(SecretLabSteam)\CommandSystem.Core.dll</HintPath>
     </Reference>
     <Reference Include="GhostSpectator">
-      <HintPath>$(SecretLabSteam)\LabAPI-Beta\plugins\GhostSpectator.dll</HintPath>
+      <HintPath>$(SecretLabSteam)\LabAPI\plugins\GhostSpectator.dll</HintPath>
     </Reference>
     <Reference Include="LabApi">
       <HintPath>$(SecretLabSteam)\LabApi.dll</HintPath>
@@ -98,6 +98,6 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SecretLabFiles)\LabAPI-Beta\plugins\7777\$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SecretLabFiles)\LabAPI\plugins\7777\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
