@@ -16,6 +16,7 @@ using PlayerRoles.PlayableScps.Scp1507;
 using PlayerStatsSystem;
 using static PlayerStatsSystem.Scp049DamageHandler;
 using Utils.NonAllocLINQ;
+using PlayerRoles.Ragdolls;
 
 namespace Scp008.Features
 {
@@ -24,6 +25,7 @@ namespace Scp008.Features
         public static bool TryInfectWith008(this Player player, int chance)
         {
             bool canBeInfected = player.CanBeInfected();
+            Log.Debug($"canbeinfed1 = {canBeInfected}");
             try
             {
                 canBeInfected = canBeInfected && !Scp008Extensions.IsGhost(player);
@@ -32,6 +34,7 @@ namespace Scp008.Features
             {
                 Log.Debug($"GhostSpectator not found, continuing.", Config.Debug);
             }
+            Log.Debug($"canbeinfed2 = {canBeInfected}");
             if (!canBeInfected)
             {
                 Log.Debug($"Player {player.Nickname} can't be infected with Scp008.", Config.Debug);
@@ -124,7 +127,8 @@ namespace Scp008.Features
                 RoleTypeId newRole = player.IsHuman ? RoleTypeId.Scp0492 : RoleTypeId.ZombieFlamingo;
                 RoleChangeReason changeReason = isRevival ? RoleChangeReason.Revived : RoleChangeReason.RemoteAdmin;
                 player.DropEverything();
-                Ragdoll.SpawnRagdoll(player, damageHandler);
+                //Ragdoll.SpawnRagdoll(player, damageHandler);
+                RagdollManager.ServerSpawnRagdoll(player.ReferenceHub, damageHandler);
                 Timing.CallDelayed(0.2f, () => player.SetRole(newRole, changeReason, RoleSpawnFlags.None));
                 Log.Debug($"Player {player.Nickname} has been turned into {newRole}.", Config.Debug);
                 return true;
