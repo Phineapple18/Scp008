@@ -47,10 +47,10 @@ namespace Scp008
         public EventHandler Events { get; private set; }
         public static MainClass Instance { get; private set; }
 
-        public override string Author { get; } = "Phineapple18";
+        public override string Author { get; } = "Catiatto";
         public override string Description { get; } = null;
         public override string Name { get; } = "Scp008";
         public override Version RequiredApiVersion { get; } = new(LabApiProperties.CompiledVersion);
-        public override Version Version { get; } = new(2, 0, 3);
+        public override Version Version { get; } = new(2, 0, 4);
     }
 }

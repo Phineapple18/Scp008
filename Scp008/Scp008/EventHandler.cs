@@ -10,8 +10,6 @@ using LabApi.Events.CustomHandlers;
 using Log = LabApi.Features.Console.Logger;
 using MEC;
 using PlayerRoles;
-using PlayerRoles.FirstPersonControl;
-using PlayerRoles.PlayableScps.Scp106;
 using PlayerStatsSystem;
 using static PlayerStatsSystem.Scp049DamageHandler;
 using Scp008.Features;
@@ -53,11 +51,10 @@ namespace Scp008
 
         public override void OnPlayerLeavingPocketDimension(PlayerLeavingPocketDimensionEventArgs ev)
         {
-            if (!ev.IsSuccessful && ev.Player.Role == RoleTypeId.Scp0492)
+            if (ev.Player.Role == RoleTypeId.Scp0492)
             {
-                ev.Player.Position = Scp106PocketExitFinder.GetBestExitPosition(ev.Player.RoleBase as IFpcRole);
-                Log.Debug($"Player {ev.Player.Nickname} exited safely Pocket Dimension as {ev.Player.Role}.", config.Debug);
-                ev.IsAllowed = false;
+                ev.IsSuccessful = true;
+                Log.Debug($"Player {ev.Player.Nickname} exited safely Pocket Dimension as SCP-0492.", config.Debug);
             }
         }
 
