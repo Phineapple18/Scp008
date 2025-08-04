@@ -1,4 +1,4 @@
-# Scp008 (2.0.3)
+# Scp008 (2.0.4)
 Plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) to infect human players with SCP-008, causing them to gradually lose health. Infected players can have effects applied to them, cure the infection or turn into Zombies upon death.
 
 ## Features
