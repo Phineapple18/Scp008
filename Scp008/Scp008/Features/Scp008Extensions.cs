@@ -16,7 +16,6 @@ using PlayerRoles.PlayableScps.Scp1507;
 using PlayerStatsSystem;
 using static PlayerStatsSystem.Scp049DamageHandler;
 using Utils.NonAllocLINQ;
-using PlayerRoles.Ragdolls;
 
 namespace Scp008.Features
 {
@@ -80,11 +79,12 @@ namespace Scp008.Features
         {
             bool canSpawn = false;
             bool isRevival = false;
+            bool configNull = Config.DeathReasons == null;
             player.TryCureOf008(100, false);
             switch (damageHandler)
             {
                 case CustomReasonDamageHandler customHandler:
-                    canSpawn = customHandler.DeathScreenText.Contains(Translation.InfectionDeathReason) && Config.DeathReasons.Contains("Infection");
+                    canSpawn = customHandler.DeathScreenText.Contains(Translation.InfectionDeathReason) && !configNull && Config.DeathReasons.Contains("Infection");
                     goto default;
                 case DisruptorDamageHandler disruptorHandler:
                     if (disruptorHandler.Disintegrate)
@@ -93,20 +93,20 @@ namespace Scp008.Features
                     }
                     goto default;
                 case ExplosionDamageHandler:
-                    canSpawn = Config.DeathReasons.Contains("Explosion");
+                    canSpawn = !configNull && Config.DeathReasons.Contains("Explosion");
                     goto default;
                 case MicroHidDamageHandler:
-                    canSpawn = Config.DeathReasons.Contains("MicroHID");
+                    canSpawn = !configNull && Config.DeathReasons.Contains("MicroHID");
                     goto default;
                 case Scp049DamageHandler scp049Handler:
                     if (scp049Handler.Attacker.Hub != null)
                     {
-                        isRevival = scp049Handler.DamageSubType != AttackType.Scp0492 && Config.DeathReasons.Contains("Scp049");
-                        canSpawn = isRevival || scp049Handler.DamageSubType == AttackType.Scp0492 && Config.DeathReasons.Contains("Scp0492");
+                        isRevival = scp049Handler.DamageSubType != AttackType.Scp0492 && !configNull && Config.DeathReasons.Contains("Scp049");
+                        canSpawn = isRevival || scp049Handler.DamageSubType == AttackType.Scp0492 && !configNull && Config.DeathReasons.Contains("Scp0492");
                     }
                     goto default;
                 case Scp1507DamageHandler scp1507Handler:
-                    canSpawn = scp1507Handler.Attacker.Role == RoleTypeId.ZombieFlamingo && Config.DeathReasons.Contains("ZombieFlamingo");
+                    canSpawn = scp1507Handler.Attacker.Role == RoleTypeId.ZombieFlamingo && !configNull && Config.DeathReasons.Contains("ZombieFlamingo");
                     goto default;
                 case UniversalDamageHandler universalHandler:
                     if (universalHandler.TranslationId == DeathTranslations.Crushed.Id)
@@ -117,7 +117,7 @@ namespace Scp008.Features
                 case WarheadDamageHandler:
                     return false;
                 default:
-                    canSpawn = canSpawn || Config.DeathReasons.Contains("Any");
+                    canSpawn = canSpawn || !configNull && Config.DeathReasons.Contains("Any");
                     break;
             }
             if (canSpawn)
@@ -125,8 +125,6 @@ namespace Scp008.Features
                 RoleTypeId newRole = player.IsHuman ? RoleTypeId.Scp0492 : RoleTypeId.ZombieFlamingo;
                 RoleChangeReason changeReason = isRevival ? RoleChangeReason.Revived : RoleChangeReason.RemoteAdmin;
                 player.DropEverything();
-                //Ragdoll.SpawnRagdoll(player, damageHandler); // NOT WORKING
-                RagdollManager.ServerSpawnRagdoll(player.ReferenceHub, damageHandler);
                 Timing.CallDelayed(0.2f, () => player.SetRole(newRole, changeReason, RoleSpawnFlags.None));
                 Log.Debug($"Player {player.Nickname} has been turned into {newRole}.", Config.Debug);
                 return true;
@@ -166,7 +164,7 @@ namespace Scp008.Features
 
         private static bool IsGhost(Player player)
         {
-            return !player.IsGhost();
+            return player.IsGhost();
         }
 
         internal static bool CanInfect(this Player player)

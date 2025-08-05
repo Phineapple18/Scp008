@@ -51,7 +51,7 @@ namespace Scp008.Features
             if (intervalTime <= 0)
             {
                 player.Damage(config.InfectionDamage, translation.InfectionDeathReason);
-                if (player.IsHuman)
+                if (player.IsHuman && translation.InfectionMessages != null)
                 {
                     string message = translation.InfectionMessages.LastOrDefault(m => player.Health <= m.Key).Value;
                     if (receivedHints.AddIfNotContains(message))

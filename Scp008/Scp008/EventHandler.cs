@@ -25,6 +25,10 @@ namespace Scp008
             {
                 ev.Player.TryCureOf008(100, false);
             }
+            if (ev.Player.Role == RoleTypeId.Scp0492)
+            {
+                Timing.CallDelayed(1f, () => ev.Player.SendHint(translation.SpawnHint, 10f));
+            }
         }
 
         public override void OnPlayerDying(PlayerDyingEventArgs ev)
@@ -64,14 +68,6 @@ namespace Scp008
             {
                 Object.Destroy(component);
                 Log.Debug($"Destroyed a Scp008Component for player {ev.Player.Nickname}.", config.Debug);
-            }
-        }
-
-        public override void OnPlayerSpawned(PlayerSpawnedEventArgs ev)
-        {
-            if (ev.Player.Role == RoleTypeId.Scp0492)
-            {
-                Timing.CallDelayed(1f, () => ev.Player.SendHint(translation.SpawnHint, 10f));
             }
         }
 
