@@ -19,7 +19,7 @@ namespace Scp008
                      "\n# Message shown upon becoming Scp0492.")]
         public string SpawnHint { get; set; } = "<voffset=-7em>You can infect others with <color=red>SCP-008</color> by attacking them.</voffset>";
 
-        [Description("Death reason shown, when player dies from the inspection.")]
+        [Description("Death reason shown, when player dies from the infection.")]
         public string InfectionDeathReason { get; set; } = "Killed by a mysterious infection.";
 
         [Description("Hints shown to infected player, when their health drops below the set value. Each hint is shown only once per infection.")]

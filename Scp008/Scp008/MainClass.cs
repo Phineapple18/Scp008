@@ -17,6 +17,10 @@ namespace Scp008
         public override void LoadConfigs()
         {
             pluginTranslation = this.LoadConfig<Translation>("translation.yml");
+            if (string.IsNullOrWhiteSpace(pluginTranslation.InfectionDeathReason))
+            {
+                throw new NullReferenceException("Property \"infection_death_reason\" cannot be null in translation file.");
+            }
             base.LoadConfigs();
         }
 
