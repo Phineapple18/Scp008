@@ -169,7 +169,7 @@ namespace Scp008.Features
 
         internal static bool CanInfect(this Player player)
         {
-            return player != null && (player.Role == RoleTypeId.Scp0492 || player.Role == RoleTypeId.ZombieFlamingo && Config.CanFlamingoInfect);
+            return player != null && (player.Role == RoleTypeId.Scp0492 || player.Role == RoleTypeId.ZombieFlamingo && Config.CanFlamingoInfect) && !(Config.InfectIfNo049 && Player.ReadyList.Any(p => p.Role == RoleTypeId.Scp049));
         }
 
         public static bool IsScp008(this Player player)

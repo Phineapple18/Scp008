@@ -22,6 +22,9 @@ namespace Scp008
         [Description("Interval between infection ticks.")]
         public float InfectionInterval { get; set; } = 5f;
 
+        [Description("Can zombies infect only, if there is no SCP-049?")]
+        public bool InfectIfNo049 { get; set; } = false;
+
         [Description("Damage of a Zombie attack leading to infection. Set below 0 to leave unchanged.")]
         public float ZombieDamage { get; set; } = 5f;
 
