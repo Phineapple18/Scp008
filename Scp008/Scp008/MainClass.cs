@@ -55,6 +55,7 @@ namespace Scp008
         public override string Description { get; } = null;
         public override string Name { get; } = "Scp008";
         public override Version RequiredApiVersion { get; } = new(LabApiProperties.CompiledVersion);
-        public override Version Version { get; } = new(2, 0, 5);
+        public override Version Version { get; } = new(2, 0, 6);
     }
 }
+
