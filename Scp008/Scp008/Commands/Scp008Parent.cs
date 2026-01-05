@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using CommandSystem;
 using Log = LabApi.Features.Console.Logger;
+
+using CommandSystem;
 using NorthwoodLib.Pools;
 using Utils.NonAllocLINQ;
 
@@ -36,8 +37,8 @@ namespace Scp008.Commands
         {
             if (MainClass.Instance == null)
             {
-                response = translation.NotEnabled;
-                Log.Debug("Plugin Scp008 is not enabled.", translation.Debug);
+                response = MainClass.Instance.pluginTranslation.PluginNotEnabled;
+                Log.Debug($"Plugin {MainClass.Instance.Name} is not enabled.", MainClass.Instance.pluginTranslation.Debug);
                 return false;
             }
             StringBuilder stringBuilder = StringBuilderPool.Shared.Rent();

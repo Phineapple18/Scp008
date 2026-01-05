@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Log = LabApi.Features.Console.Logger;
+
 using HarmonyLib;
 using LabApi.Events.CustomHandlers;
 using LabApi.Features;
@@ -19,15 +21,16 @@ namespace Scp008
             pluginTranslation = this.LoadConfig<Translation>("translation.yml");
             if (string.IsNullOrWhiteSpace(pluginTranslation.InfectionDeathReason))
             {
-                throw new NullReferenceException("Property \"infection_death_reason\" cannot be null in translation file.");
+                pluginTranslation.InfectionDeathReason = "Killed by a mysterious infection.";
+                Log.Warn("Property \"infection_death_reason\" cannot be null in translation file, added default translation.");
             }
             base.LoadConfigs();
+            pluginConfig = Config;
         }
 
         public override void Enable()
         {
             Instance = this;
-            pluginConfig = Config;
             Events = new();
             CustomHandlersManager.RegisterEventsHandler(Events);
             harmony = new($"{Name.ToLower()}.{DateTime.UtcNow.Ticks}");
@@ -58,4 +61,3 @@ namespace Scp008
         public override Version Version { get; } = new(2, 0, 6);
     }
 }
-

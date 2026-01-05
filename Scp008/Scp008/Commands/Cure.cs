@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using CommandSystem;
 using Log = LabApi.Features.Console.Logger;
+
+using CommandSystem;
 using LabApi.Features.Permissions;
 using LabApi.Features.Wrappers;
 using NorthwoodLib.Pools;
@@ -18,51 +19,50 @@ namespace Scp008.Commands
     {
         public Cure(string command, string description, string[] aliases)
         {
-            translation = Translation.AccessTranslation();
             Command = command ?? _command;
             Description = description;
             Aliases = aliases;
             Usage = new[] { "PlayerID/all" };
-            Log.Debug($"Registered {this.Command} subcommand.", translation.Debug);
+            Log.Debug($"Registered {this.Command} subcommand.", Translation.AccessTranslation().Debug);
         }
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             if (MainClass.Instance == null)
             {
-                response = translation.NotEnabled;
-                Log.Debug("Plugin Scp008 is not enabled.", translation.Debug);
+                response = Translation.PluginNotEnabled;
+                Log.Debug($"Plugin {MainClass.Instance.Name} is not enabled.", Translation.Debug);
                 return false;
             }
             if (sender == null)
             {
-                response = translation.SenderNull;
+                response = Translation.SenderNull;
                 Log.Debug("Command sender is null.", Config.Debug);
                 return false;
             }
             if (!sender.HasPermissions("008.infection"))
             {
-                response = translation.NoPerms;
+                response = Translation.NoPerms;
                 Log.Debug($"Player {sender.LogName} doesn't have required permission to use this command.", Config.Debug);
                 return false;
             }
             if (arguments.IsEmpty())
             {
-                response = $"{Description} {translation.Usage}: {this.DisplayCommandUsage()}.";
+                response = $"{Description} {Translation.Usage}: {this.DisplayCommandUsage()}.";
                 Log.Debug($"Player {sender.LogName} didn't provide arguments for command.", Config.Debug);
                 return false;
             }
             List<Player> validPlayers = arguments.At(0).ToLower() == "all" ? Player.ReadyList.ToList() : Player.ReadyList.Where(p => arguments.Contains(p.PlayerId.ToString())).ToList();
             if (validPlayers.IsEmpty())
             {
-                response = translation.NoPlayers;
+                response = Translation.NoPlayers;
                 Log.Debug($"Player {sender.LogName} provided non-existent player(s).", Config.Debug);
                 return false;
             }
             StringBuilder success = StringBuilderPool.Shared.Rent();
             StringBuilder failure = StringBuilderPool.Shared.Rent();
-            success.AppendLine(translation.CureSuccess);
-            failure.AppendLine($"{translation.CureFail}:");
+            success.AppendLine(Translation.CureSuccess);
+            failure.AppendLine($"{Translation.CureFail}:");
             int[] num = new int[2] { 0, 0 };
             validPlayers.ForEach<Player>(player =>
             {
@@ -86,12 +86,12 @@ namespace Scp008.Commands
         internal const string _command = "cure";
         internal const string _description = "Cure chosen player(s) of Scp008. Separate entries with space.";
         internal static readonly string[] _aliases = new[] { "c" };
-        private readonly Translation translation;
 
         public string Command { get; }
         public string Description { get; }
         public string[] Aliases { get; }
         public string[] Usage { get; }
-        private static Config Config => MainClass.Instance.pluginConfig;
+        private Config Config => MainClass.Instance.pluginConfig;
+        private Translation Translation => MainClass.Instance.pluginTranslation;
     }
 }

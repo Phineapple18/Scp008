@@ -31,7 +31,12 @@ namespace Scp008
         [Description("Effects and their intensity, that will be enabled once player health drops below certain values.")]
         public Dictionary<string, List<EffectParameters>> Scp008Effects { get; set; } = new()
         {
-            { "Bleeding", new() { new(){ Health = 90f, Intensity = 1 }} },
+            { 
+                "Bleeding", new() 
+                { 
+                    new(){ Health = 90f, Intensity = 1 }
+                } 
+            },
             { 
                 "Blindness", new() 
                 { 

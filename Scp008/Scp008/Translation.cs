@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.IO;
 
 using LabApi.Loader.Features.Paths;
+using LabApi.Features.Wrappers;
 using Scp008.Commands;
 using Serialization;
 
@@ -21,6 +22,9 @@ namespace Scp008
 
         [Description("Death reason shown, when player dies from the infection.")]
         public string InfectionDeathReason { get; set; } = "Killed by a mysterious infection.";
+
+        [Description("Custom info of infected players. Leave empty to disable.")]
+        public string InfectedInfo { get; set; } = "<color=red>INFECTED</color>";
 
         [Description("Hints shown to infected player, when their health drops below the set value. Each hint is shown only once per infection.")]
         public Dictionary<float, string> InfectionMessages { get; set; } = new()
@@ -72,7 +76,7 @@ namespace Scp008
         [Description("Translation for command responses.")]
         public string NoPerms { get; set; } = "You don't have permission to use that command.";
         public string NoPlayers { get; set; } = "Provided player(s) doesn't exist.";
-        public string NotEnabled { get; set; } = "Scp008 is not enabled.";
+        public string PluginNotEnabled { get; set; } = "Scp008 is not enabled.";
         public string RoundNotStarted { get; set; } = "You can't use that command before round start.";
         public string SenderNull { get; set; } = "Commandsender is null.";
 
@@ -83,6 +87,6 @@ namespace Scp008
 
         private static Translation translation;
 
-        private static readonly string filePath = Path.Combine(PathManager.Configs.FullName, "Scp008", "translation.yml");
+        private static readonly string filePath = Path.Combine(PathManager.Configs.FullName, Server.Port.ToString(), "Scp008", "translation.yml");
     }
 }
