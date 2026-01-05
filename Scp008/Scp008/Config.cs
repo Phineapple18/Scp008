@@ -34,7 +34,7 @@ namespace Scp008
             { 
                 "Bleeding", new() 
                 { 
-                    new(){ Health = 90f, Intensity = 1 }
+                    new() { Health = 90f, Intensity = 1 }
                 } 
             },
             { 
@@ -81,3 +81,4 @@ namespace Scp008
         public byte Intensity { get; set; }
     }
 }
+
