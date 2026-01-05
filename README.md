@@ -1,4 +1,4 @@
-# Scp008 (2.0.6)
+# Scp008 (2.0.7)
 Plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) to infect human players with SCP-008, causing them to gradually lose health. Infected players can have effects applied to them, cure the infection or turn into Zombies upon death.
 
 ## Features
@@ -15,6 +15,7 @@ Plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) to
 - Zombie Flamingos (SCP-1507-049) can optionally infect others with SCP-008.
 - Flamingos can't hurt infected flamingo.
 - Infected Flamingos don't have any hints displayed to them.
+- Drinking SCP-021J cures of SCP-008.
 
 ## Required plugins and dependencies
 - [Harmony 2.2.2.0 (net48)](https://github.com/pardeike/Harmony/releases/tag/v2.2.2.0) by pardeike - dependency
