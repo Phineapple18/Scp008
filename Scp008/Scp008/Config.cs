@@ -13,8 +13,12 @@ namespace Scp008
         [Description("Should debug be enabled?")]
         public bool Debug { get; set; } = false;
 
-        [Description("Infection chance per Zombie attack. Set between 0-100.")]
-        public int InfectionChance { get; set; } = 50;
+        [Description("Infection chance per Zombie attack dependent on Zombie count. The largest chance less than or equal to the zombie number will be used.")]
+        public Dictionary<int, int> InfectionChance { get; set; } = new()
+        {
+            { 1, 30 },
+            { 5, 50 }
+        };
 
         [Description("Damage per infection tick.")]
         public float InfectionDamage { get; set; } = 5f;
@@ -32,7 +36,7 @@ namespace Scp008
         public Dictionary<string, List<EffectParameters>> Scp008Effects { get; set; } = new()
         {
             { 
-                "Bleeding", new() 
+                "Bleeding", new()
                 { 
                     new() { Health = 90f, Intensity = 1 }
                 } 
@@ -81,4 +85,3 @@ namespace Scp008
         public byte Intensity { get; set; }
     }
 }
-

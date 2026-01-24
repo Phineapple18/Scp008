@@ -16,7 +16,7 @@ namespace Scp008
 {
     public class Translation
     {
-        [Description("MISCELLANOUS TRANSLATION. Don't translate words between two '%'." +
+        [Description("DON'T TRANSLATE WORDS BETWEEN TWO '%'." +
                      "\n# Message shown upon becoming Scp0492.")]
         public string SpawnHint { get; set; } = "<voffset=-7em>You can infect others with <color=red>SCP-008</color> by attacking them.</voffset>";
 
@@ -36,10 +36,6 @@ namespace Scp008
 
         [Description("Hint shown to player when cured.")]
         public string CuredMessage { get; set; } = "Your fever is gone.";
-
-        [Description("COMMANDS\' TRANSLATION. Don't translate words between two '%'." +
-                     "\n# Should debug be enabled for command registering/loading?")]
-        public bool Debug { get; set; } = false;
 
         [Description("Translation for Scp008 parent command and its subcommands. Make sure not to duplicate commands or aliases." +
                      "\n# Scp008 parent command.")]
@@ -76,7 +72,6 @@ namespace Scp008
         [Description("Translation for command responses.")]
         public string NoPerms { get; set; } = "You don't have permission to use that command.";
         public string NoPlayers { get; set; } = "Provided player(s) doesn't exist.";
-        public string PluginNotEnabled { get; set; } = "Scp008 is not enabled.";
         public string RoundNotStarted { get; set; } = "You can't use that command before round start.";
         public string SenderNull { get; set; } = "Commandsender is null.";
 

@@ -10,11 +10,13 @@ using Object = UnityEngine.Object;
 using Footprinting;
 using LabApi.Events.Arguments.PlayerEvents;
 using LabApi.Events.CustomHandlers;
+using LabApi.Features.Wrappers;
 using MEC;
 using PlayerRoles;
 using PlayerStatsSystem;
-using static PlayerStatsSystem.Scp049DamageHandler;
 using Scp008.Features;
+
+using static PlayerStatsSystem.Scp049DamageHandler;
 
 namespace Scp008
 {
@@ -42,8 +44,10 @@ namespace Scp008
 
         public override void OnPlayerHurting(PlayerHurtingEventArgs ev)
         {
-            if (ev.DamageHandler is AttackerDamageHandler adh && ev.Attacker.CanInfect() && ev.Player.TryInfectWith008(Config.InfectionChance) && Config.ZombieDamage >= 0)
-            {    
+            if (ev.DamageHandler is AttackerDamageHandler adh && ev.Attacker.CanInfect()
+            && Config.InfectionChance != null && ev.Player.TryInfectWith008(Player.ReadyList.Count(p => p.Role == RoleTypeId.Scp0492))
+            && Config.ZombieDamage >= 0)
+            {
                 Timing.CallDelayed(Timing.WaitForOneFrame, () => ev.Player.Damage(new Scp049DamageHandler(new Footprint(ev.Attacker.ReferenceHub), Config.ZombieDamage, AttackType.Scp0492)));
                 ev.Attacker.SendHitMarker();
                 ev.IsAllowed = false;

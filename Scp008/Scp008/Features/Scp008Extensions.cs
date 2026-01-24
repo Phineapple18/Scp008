@@ -6,22 +6,24 @@ using System.Threading.Tasks;
 
 using System.IO;
 
+using Log = LabApi.Features.Console.Logger;
+
 using CustomPlayerEffects;
 using GhostSpectator.Features.Extensions;
-using Log = LabApi.Features.Console.Logger;
 using LabApi.Features.Wrappers;
 using MEC;
 using PlayerRoles;
 using PlayerRoles.PlayableScps.Scp1507;
 using PlayerStatsSystem;
-using static PlayerStatsSystem.Scp049DamageHandler;
 using Utils.NonAllocLINQ;
+
+using static PlayerStatsSystem.Scp049DamageHandler;
 
 namespace Scp008.Features
 {
     public static class Scp008Extensions
     {
-        public static bool TryInfectWith008(this Player player, int chance)
+        public static bool TryInfectWith008(this Player player, int count)
         {
             bool canBeInfected = player.CanBeInfected();
             try
@@ -30,13 +32,14 @@ namespace Scp008.Features
             }
             catch (FileNotFoundException)
             {
-                Log.Debug($"GhostSpectator not found, continuing.", Config.Debug);
+                Log.Debug("GhostSpectator not found, continuing.", Config.Debug);
             }
             if (!canBeInfected)
             {
                 Log.Debug($"Player {player.Nickname} can't be infected with Scp008.", Config.Debug);
                 return false;
             }
+            int chance = Config.InfectionChance.Last(c => c.Key <= count).Value;
             if (randInt.Next(99) < chance)
             {
                 try

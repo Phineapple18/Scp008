@@ -21,7 +21,7 @@ namespace Scp008.Commands
             Command = translation.Scp008parentCommand ?? _command;
             Description = translation.Scp008parentDescription;
             Aliases = translation.Scp008parentAliases;
-            Log.Debug($"Registered {this.Command} parent command.", translation.Debug);
+            Log.Info($"Registered {this.Command} parent command.");
             this.LoadGeneratedCommands();
         }
 
@@ -30,17 +30,11 @@ namespace Scp008.Commands
             this.RegisterCommand(new Cure(translation.CureCommand, translation.CureDescription, translation.CureAliases));
             this.RegisterCommand(new Infect(translation.InfectCommand, translation.InfectDescription, translation.InfectAliases));
             this.RegisterCommand(new List(translation.ListCommand, translation.ListDescription, translation.ListAliases));
-            Log.Debug($"Registered {this.AllCommands.Count()} command(s) for {this.Command} parent command.", translation.Debug);
+            Log.Info($"Registered {this.AllCommands.Count()} subcommand(s) for {this.Command} parent command.");
         }
 
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            if (MainClass.Instance == null)
-            {
-                response = MainClass.Instance.pluginTranslation.PluginNotEnabled;
-                Log.Debug($"Plugin {MainClass.Instance.Name} is not enabled.", MainClass.Instance.pluginTranslation.Debug);
-                return false;
-            }
             StringBuilder stringBuilder = StringBuilderPool.Shared.Rent();
             stringBuilder.AppendLine($"{Description} {translation.Subcommands}:");
             foreach (ICommand command in this.AllCommands)

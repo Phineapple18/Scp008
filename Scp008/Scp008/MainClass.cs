@@ -41,6 +41,7 @@ namespace Scp008
         {
             harmony.UnpatchAll();
             harmony = null;
+            CommandLoader.UnregisterCommands(this);
             CustomHandlersManager.UnregisterEventsHandler(Events);
             Events = null;
             pluginConfig = null;
@@ -58,7 +59,6 @@ namespace Scp008
         public override string Description { get; } = null;
         public override string Name { get; } = "Scp008";
         public override Version RequiredApiVersion { get; } = new(LabApiProperties.CompiledVersion);
-        public override Version Version { get; } = new(2, 0, 7);
+        public override Version Version { get; } = new(2, 1, 0);
     }
 }
-
