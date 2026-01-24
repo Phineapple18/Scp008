@@ -2,7 +2,7 @@
 Plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) to infect human players with SCP-008, causing them to gradually lose health. Infected players can have effects applied to them, cure the infection or turn into Zombies upon death.
 
 ## Features
-- Zombies have a configurable chance to infect human players with SCP-008.
+- Zombies have a configurable chance to infect human players with SCP-008, dependent on Zombies count.
 - Infected player can:
   * have effects applied to them
   * have hints displayed after their health drops below configurable thresholds
@@ -28,7 +28,7 @@ Place the *Harmony* dll in "...\AppData\Roaming\SCP Secret Laboratory\LabAPI-Bet
 |Name|Type|Default value|Description|
 |---|---|---|---|
 |debug|bool|false|Should debug be enabled?|
-|infection_chance|int|50|Infection chance per Zombie attack. Set between 0-100.|
+|infection_chance|Dictionary<int,int>|1: 30<br/>5: 50|Infection chance per Zombie attack dependent on Zombie count. The largest chance less than or equal to the zombie number will be used.|
 |infection_damage|float|5f|Damage per infection tick.|
 |infection_interval|float|5f|Interval between infection ticks.|
 |infect_if_no049|bool|false|Can zombies infect only, if there is no SCP-049?|
