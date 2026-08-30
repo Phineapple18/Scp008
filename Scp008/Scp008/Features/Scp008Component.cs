@@ -91,11 +91,11 @@ namespace Scp008.Features
             "Disabled",
             "Exhausted",
             "FogControl",
+            "HeavyFooted",
             "Hemorrhage",
             "Lightweight",
-            "NightVision",
-            "HeavyFooted",
             "MovementBoost",
+            "NightVision",
             "Poisoned",
             "Slowness"
         };
