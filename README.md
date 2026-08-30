@@ -1,4 +1,4 @@
-# Scp008 (2.1.0)
+# Scp008 (2.2.0)
 Plugin for the "SCP: Secret Laboratory" game, that allows Zombies (SCP-049-2) to infect human players with SCP-008, causing them to gradually lose health. Infected players can have effects applied to them, cure the infection or turn into Zombies upon death.
 
 ## Features
@@ -35,25 +35,29 @@ Place the *Harmony* dll in "...\AppData\Roaming\SCP Secret Laboratory\LabAPI-Bet
 |zombie_damage|float|5f|Damage of a Zombie attack leading to infection. Set below 0 to leave unchanged.|
 |scp008_effects*|Dictionary\<string, float>|Bleeding:<br/>-health: 90<br/>&nbsp;&nbsp;intensity: 1<br/>Blindness:<br/>-health: 60<br/>&nbsp;&nbsp;intensity: 10<br/>-health: 30<br/>&nbsp;&nbsp;intensity: 20|Effects and their intensity, that will be enabled once player health drops below certain values.|
 |cure_items|Dictionary\<ItemType, int>|SCP500: 100<br/> Medkit: 50|Items, that can cure the infection and their cure chance. Set between 0-100.|
-|ff_health_cutoff|float|20f|Health threshold of an infected player, below which they can be killed by a player from the same faction (only on servers with Firendly Fire disabled).|
+|friendly_fire_health|float|20f|Health threshold of infected player below which they can be attacked by their factionmates with no conseqences.|
 |death_reasons**|List\<string>|-Infection<br/>-Scp0492<br/>-ZombieFlamingo|Death causes, that will turn an infected player into a Zombie upon death. Leave empty to disable.|
 |can_flamingo_be_infected|bool|false|Can Flamingos (except Alpha Flamingo) be infected with SCP-008?|
 |can_flamingo_infect|bool|false|Can Zombie Flamingos infect with SCP-008?|
 
 **Allowed effects:*
+- AmnesiaItems
 - Bleeding
 - Blindness (won't work if player wears SCP-1344 or has severed eyes)
-- Blurred
+- Blurriness
 - Burned
 - CardiacArrest
 - Concussed
 - Deafened
 - Disabled
 - Exhausted
-- Flashed
+- FogControl
+- HeavyFooted
 - Hemorrhage
+- Lightweight
+- MovementBoost
+- NightVision
 - Poisoned
-- Scp207
 - Slowness
 
 **Possible death causes, leading to infection:*
@@ -66,18 +70,12 @@ Place the *Harmony* dll in "...\AppData\Roaming\SCP Secret Laboratory\LabAPI-Bet
 - Any (except warhead and disruptor on disintegration mode)
 
 ## Translation
-The translation file is in the same folder as the config file and allows you to customize e.g:
-- hints displayed to infected players
-- command names, aliases, descriptons and responses
+The translation file is in the same folder as the config file and allows you to customize information shown to players, such as hints and command names, aliases, descriptons and responses.
 
 *IMPORTANT:* If you translate command names and/or aliases (except subcommands), make sure not to duplicate them.
 
 ## Remote Admin commands
-### scp008
-Parent command for handling SCP-008. Subcommands:
-- cure - Cure chosen player(s) of Scp008. Separate entries with space. Usage: PlayerID/all
-- list - Print a list of all players infected with Scp008.
-- infect - Infect chosen player(s) with Scp008. Separate entries with space. Usage: PlayerId/all
+1. scp008 - allows managing infection. Subcommands: cure, list, infect
 
 ## Permissions
 - 008.infection - allows a player to use *cure* and *infect* commands
