@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.ComponentModel;
 
 namespace Scp008
@@ -13,26 +12,26 @@ namespace Scp008
         [Description("Should debug be enabled?")]
         public bool Debug { get; set; } = false;
 
-        [Description("Infection chance per Zombie attack dependent on Zombie count. The largest chance less than or equal to the zombie number will be used.")]
+        [Description("Infection chance from Zombie attack depending on their count. The exact number or highest less than will be used.")]
         public Dictionary<int, int> InfectionChance { get; set; } = new()
         {
             { 1, 30 },
             { 5, 50 }
         };
-
-        [Description("Damage per infection tick.")]
+        
+        [Description("Infection damage per tick.")]
         public float InfectionDamage { get; set; } = 5f;
-
+        
         [Description("Interval between infection ticks.")]
         public float InfectionInterval { get; set; } = 5f;
-
-        [Description("Can zombies infect only, if there is no SCP-049?")]
-        public bool InfectIfNo049 { get; set; } = false;
-
-        [Description("Damage of a Zombie attack leading to infection. Set below 0 to leave unchanged.")]
+        
+        [Description("Should zombies only be able to infect when there is no SCP-049?")]
+        public bool InfectNo049Only { get; set; } = false;
+        
+        [Description("Zombie attack damage upon infection. Set to 0 or below to leave unchanged.")]
         public float ZombieDamage { get; set; } = 5f;
 
-        [Description("Effects and their intensity, that will be enabled once player health drops below certain values.")]
+        [Description("Effects, that will be enabled with specific intensity once player's health drops below certain threshold.")]
         public Dictionary<string, List<EffectParameters>> Scp008Effects { get; set; } = new()
         {
             { 
@@ -50,17 +49,17 @@ namespace Scp008
             }
         };
 
-        [Description("Items, that can cure the infection and their cure chance. Set between 0-100.")]
+        [Description("Items able to cure infection and their cure chance. Set between 0-100.")]
         public Dictionary<ItemType, int> CureItems { get; set; } = new()
         {
             { ItemType.SCP500, 100},
             { ItemType.Medkit, 50}
         };
 
-        [Description("Health threshold of an infected player, below which they can be killed by a player from the same faction (only on servers with Firendly Fire disabled).")]
-        public float FfHealthCutoff { get; set; } = 20f;
+        [Description("Health threshold of infected player below which they can be attacked by their factionmates with no conseqences.")]
+        public float FriendlyfireHealth { get; set; } = 20f;
 
-        [Description("Death causes, that will turn an infected player into a Zombie upon death. Leave empty to disable.")]
+        [Description("Death causes that will turn infected player into a Zombie upon death. Leave empty to disable.")]
         public List<string> DeathReasons { get; set; } = new()
         {
             "Infection",
@@ -72,11 +71,11 @@ namespace Scp008
             "Any"
         };
 
-        [Description("Can Flamingos (except Alpha Flamingo) be infected with SCP-008?")]
-        public bool CanFlamingoBeInfected { get; set; } = true;
+        [Description("Can Flamingos (except Alpha) be infected with SCP-008?")]
+        public bool FlamingoInfected { get; set; } = true;
 
         [Description("Can Zombie Flamingos infect with SCP-008?")]
-        public bool CanFlamingoInfect { get; set; } = false;
+        public bool FlamingoInfect { get; set; } = false;
     }
 
     public class EffectParameters

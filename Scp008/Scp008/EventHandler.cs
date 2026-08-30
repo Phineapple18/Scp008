@@ -4,9 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Log = LabApi.Features.Console.Logger;
-using Object = UnityEngine.Object;
-
 using Footprinting;
 using LabApi.Events.Arguments.PlayerEvents;
 using LabApi.Events.CustomHandlers;
@@ -15,8 +12,9 @@ using MEC;
 using PlayerRoles;
 using PlayerStatsSystem;
 using Scp008.Features;
-
 using static PlayerStatsSystem.Scp049DamageHandler;
+using Log = LabApi.Features.Console.Logger;
+using Object = UnityEngine.Object;
 
 namespace Scp008
 {
@@ -44,9 +42,9 @@ namespace Scp008
 
         public override void OnPlayerHurting(PlayerHurtingEventArgs ev)
         {
-            if (ev.DamageHandler is AttackerDamageHandler adh && ev.Attacker.CanInfect()
-            && Config.InfectionChance != null && ev.Player.TryInfectWith008(Player.ReadyList.Count(p => p.Role == RoleTypeId.Scp0492))
-            && Config.ZombieDamage >= 0)
+            if (ev.DamageHandler is AttackerDamageHandler && ev.Attacker.CanInfect() && Config.InfectionChance != null
+            && ev.Player.TryInfectWith008(Config.InfectionChance.Last(c => c.Key <= Player.ReadyList.Count(p => p.Role == RoleTypeId.Scp0492)).Value)
+            && Config.ZombieDamage > 0)
             {
                 Timing.CallDelayed(Timing.WaitForOneFrame, () => ev.Player.Damage(new Scp049DamageHandler(new Footprint(ev.Attacker.ReferenceHub), Config.ZombieDamage, AttackType.Scp0492)));
                 ev.Attacker.SendHitMarker();
@@ -69,7 +67,7 @@ namespace Scp008
 
         public override void OnPlayerLeft(PlayerLeftEventArgs ev)
         {
-            if (ev.Player != null && ev.Player.ReferenceHub.TryGetComponent(out Scp008Component component))
+            if (ev.Player?.ReferenceHub.TryGetComponent(out Scp008Component component) ?? false)
             {
                 Object.Destroy(component);
                 Log.Debug($"Destroyed a Scp008Component for player {ev.Player.Nickname}.", Config.Debug);
@@ -86,7 +84,7 @@ namespace Scp008
 
         public override void OnPlayerUsedItem(PlayerUsedItemEventArgs ev)
         {
-            if (ev.Player.IsScp008() && (ev.UsableItem.Category == ItemCategory.Medical || ev.UsableItem.Type == ItemType.SCP500) && Config.CureItems.TryGetValue(ev.UsableItem.Type, out int chance))
+            if (ev.Player.IsScp008() && (ev.UsableItem.Category == ItemCategory.Medical || ev.UsableItem.Type == ItemType.SCP500) && (Config.CureItems?.TryGetValue(ev.UsableItem.Type, out int chance) ?? false))
             {
                 ev.Player.TryCureOf008(chance);
             }

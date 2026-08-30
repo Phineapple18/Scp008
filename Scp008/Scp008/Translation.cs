@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.ComponentModel;
 using System.IO;
 
@@ -24,14 +23,14 @@ namespace Scp008
         public string InfectionDeathReason { get; set; } = "Killed by a mysterious infection.";
 
         [Description("Custom info of infected players. Leave empty to disable.")]
-        public string InfectedInfo { get; set; } = "<color=red>INFECTED</color>";
+        public string InfectedCustomInfo { get; set; } = "<color=red>INFECTED</color>";
 
         [Description("Hints shown to infected player, when their health drops below the set value. Each hint is shown only once per infection.")]
-        public Dictionary<float, string> InfectionMessages { get; set; } = new()
+        public Dictionary<int, string> InfectionMessages { get; set; } = new()
         {
-            { 90f, "You feel kinda feverish." },
-            { 55f , "You feel nauseated."},
-            { 20f , "You feel very faint."}
+            { 90, "You feel kinda feverish." },
+            { 55 , "You feel nauseated."},
+            { 20 , "You feel very faint."}
         };
 
         [Description("Hint shown to player when cured.")]
@@ -70,7 +69,7 @@ namespace Scp008
         public string Usage { get; set; } = "Usage";
 
         [Description("Translation for command responses.")]
-        public string NoPerms { get; set; } = "You don't have permission to use that command.";
+        public string NoPermissions { get; set; } = "You don't have permission to use that command.";
         public string NoPlayers { get; set; } = "Provided player(s) doesn't exist.";
         public string RoundNotStarted { get; set; } = "You can't use that command before round start.";
         public string SenderNull { get; set; } = "Commandsender is null.";

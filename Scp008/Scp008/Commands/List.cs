@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Log = LabApi.Features.Console.Logger;
-
 using CommandSystem;
 using LabApi.Features.Permissions;
 using Scp008.Features;
+using Log = LabApi.Features.Console.Logger;
 
 namespace Scp008.Commands
 {
@@ -32,7 +31,7 @@ namespace Scp008.Commands
             }
             if (!sender.HasPermissions("008.list"))
             {
-                response = Translation.NoPerms;
+                response = Translation.NoPermissions;
                 Log.Debug($"Player {sender.LogName} doesn't have required permission to use this command.", Config.Debug);
                 return false;
             }

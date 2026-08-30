@@ -4,15 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Scp1344Item = InventorySystem.Items.Usables.Scp1344.Scp1344Item;
-using Log = LabApi.Features.Console.Logger;
-
 using CustomPlayerEffects;
 using InventorySystem;
 using InventorySystem.Items;
 using LabApi.Features.Wrappers;
 using UnityEngine;
 using Utils.NonAllocLINQ;
+using Log = LabApi.Features.Console.Logger;
+using Scp1344Item = InventorySystem.Items.Usables.Scp1344.Scp1344Item;
 
 namespace Scp008.Features
 {
@@ -28,7 +27,7 @@ namespace Scp008.Features
         public void OnEnable()
         {
             intervalTime = Config.InfectionInterval;
-            player.CustomInfo = Translation.InfectedInfo;
+            player.CustomInfo = Translation.InfectedCustomInfo;
             Log.Debug($"Enabled a Scp008Component for player {player.Nickname}.", Config.Debug);
         }
 
@@ -36,11 +35,14 @@ namespace Scp008.Features
         {
             Config.Scp008Effects?.ForEach(effect =>
             {
+                if (!allowedEffects.Contains(effect.Key))
+                {
+                    return;
+                }
                 EffectParameters parameters = effect.Value.OrderByDescending(e => e.Health).LastOrDefault(e => player.Health < e.Health);
                 if (parameters != null && player.TryGetEffect(effect.Key, out StatusEffectBase effectBase) && effectBase.Intensity != parameters.Intensity)
                 {
-                    if (effectBase is Blindness
-                    && (player.ActiveEffects.Any(e => e is SeveredEyes)
+                    if (effectBase is Blindness && (player.HasEffect<SeveredEyes>()
                     || player.Inventory.TryGetInventoryItem(ItemType.SCP1344, out ItemBase item)
                     && Enumerable.Range(2, 8).Contains((byte)(item as Scp1344Item).Status)))
                     {
@@ -53,10 +55,10 @@ namespace Scp008.Features
             if (intervalTime <= 0)
             {
                 player.Damage(Config.InfectionDamage, Translation.InfectionDeathReason);
-                if (player.IsHuman && Translation.InfectionMessages != null)
+                if (player.IsHuman)
                 {
-                    string message = Translation.InfectionMessages.LastOrDefault(m => player.Health <= m.Key).Value;
-                    if (receivedHints.AddIfNotContains(message))
+                    string message = Translation.InfectionMessages?.LastOrDefault(m => player.Health <= m.Key).Value;
+                    if (message != null && receivedHints.AddIfNotContains(message))
                     {
                         player.SendHint(message, 5);
                     }
@@ -76,6 +78,27 @@ namespace Scp008.Features
         private Player player;
         private float intervalTime;
         private readonly List<string> receivedHints = new();
+        private static readonly List<string> allowedEffects = new()
+        {
+            "AmnesiaItems",
+            "Bleeding",
+            "Blindness",
+            "Blurriness",
+            "Burned",
+            "CardiacArrest",
+            "Concussed",
+            "Deafened",
+            "Disabled",
+            "Exhausted",
+            "FogControl",
+            "Hemorrhage",
+            "Lightweight",
+            "NightVision",
+            "HeavyFooted",
+            "MovementBoost",
+            "Poisoned",
+            "Slowness"
+        };
 
         private Config Config => MainClass.Instance.pluginConfig;
         private Translation Translation => MainClass.Instance.pluginTranslation;
